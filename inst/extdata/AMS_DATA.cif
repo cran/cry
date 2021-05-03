@@ -1,0 +1,84 @@
+data_global
+_chemical_name_mineral 'Tincalconite'
+loop_
+_publ_author_name
+'Giacovazzo C'
+'Menchetti S'
+'Scordari F'
+_journal_name_full 'American Mineralogist'
+_journal_volume 58 
+_journal_year 1973
+_journal_page_first 523
+_journal_page_last 530
+_publ_section_title
+;
+ The crystal structure of tincalconite
+;
+_database_code_amcsd 0000321
+_chemical_formula_sum 'Na B2 O6 H5'
+_cell_length_a 11.09
+_cell_length_b 11.09
+_cell_length_c 21.07
+_cell_angle_alpha 90
+_cell_angle_beta 90
+_cell_angle_gamma 120
+_cell_volume 2244.183
+_exptl_crystal_density_diffrn      1.940
+_symmetry_space_group_name_H-M 'R 3 2'
+loop_
+_space_group_symop_operation_xyz
+  'x,y,z'
+  '2/3+x,1/3+y,1/3+z'
+  '1/3+x,2/3+y,2/3+z'
+  '-x,-x+y,-z'
+  '2/3-x,1/3-x+y,1/3-z'
+  '1/3-x,2/3-x+y,2/3-z'
+  'y,x,-z'
+  '2/3+y,1/3+x,1/3-z'
+  '1/3+y,2/3+x,2/3-z'
+  'x-y,-y,-z'
+  '2/3+x-y,1/3-y,1/3-z'
+  '1/3+x-y,2/3-y,2/3-z'
+  '-y,x-y,z'
+  '2/3-y,1/3+x-y,1/3+z'
+  '1/3-y,2/3+x-y,2/3+z'
+  '-x+y,-x,z'
+  '2/3-x+y,1/3-x,1/3+z'
+  '1/3-x+y,2/3-x,2/3+z'
+loop_
+_atom_site_label
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+Na1   0.00000   0.66950   0.50000
+Na2   0.00000   0.00000   0.50000
+Na3   0.00000   0.00000   0.09280
+B1   0.09260   0.26760   0.38250
+B2   0.23850   0.05850   0.28820
+O1   0.00000   0.53340   0.00000
+O2   0.03250   0.29110   0.25260
+O3   0.21290   0.04210   0.35030
+O-H4   0.12810   0.19420   0.42900
+O-H5   0.26300   0.17940   0.25770
+Wat6   0.08850   0.22230   0.13390
+Wat7   0.00000   0.86200   0.00000
+loop_
+_atom_site_aniso_label
+_atom_site_aniso_U_11
+_atom_site_aniso_U_22
+_atom_site_aniso_U_33
+_atom_site_aniso_U_12
+_atom_site_aniso_U_13
+_atom_site_aniso_U_23
+Na1 0.01776 0.01869 0.01574 0.00888 0.00103 0.00103
+Na2 0.01355 0.01355 0.02699 0.00654 0.00000 0.00000
+Na3 0.03505 0.03505 0.04723 0.01776 0.00000 0.00000
+B1 0.01028 0.02009 0.00900 0.01028 0.00205 0.00103
+B2 0.01682 0.01122 0.02699 0.00888 0.00410 0.00410
+O1 0.00187 0.00607 0.01574 0.00093 -0.00513 -0.00308
+O2 0.01449 0.00654 0.02249 0.00000 -0.00718 0.00718
+O3 0.02009 0.00888 0.01349 0.00701 0.00308 0.00205
+O-H4 0.01822 0.00794 0.01349 0.00981 0.00410 0.00205
+O-H5 0.07944 0.02523 0.03823 0.04019 0.03076 0.02153
+Wat6 0.03505 0.03084 0.01125 0.02056 -0.00923 -0.00410
+

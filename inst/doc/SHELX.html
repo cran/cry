@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Read SHELXC/D/E log file</title>
+
+<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Read SHELXC/D/E log file</h1>
+
+
+
+<!-- ```{r, include = FALSE} -->
+<!-- knitr::opts_chunk$set( -->
+<!--   collapse = TRUE, -->
+<!--   comment = "#>" -->
+<!-- ) -->
+<!-- ``` -->
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The aim of this tutorial is to load the content of the log file, in output from SHELXC/D/E, in the workspace and create dataframes that can be used for further analysis or data visualisation. The <code>cry</code> function <code>readSHELXlog</code> can load in the R working memory all the log files in output from SHELXC/D/E and give in output a dataframe for SHELXC/D and a list of dataframes for SHELXE.</p>
+</div>
+<div id="sample-shelxcde-log-files." class="section level2">
+<h2>Sample SHELXC/D/E log files.</h2>
+<p>Some sample files are stored as external data in this package. Among them there are the SHELXC/D/E log files available with the current release. To access the files, first load the <code>cry</code> package.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cry)</span></code></pre></div>
+<p>Next, have a look at what is included in the external-data directory of <code>cry</code>.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>datadir <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>,<span class="at">package=</span><span class="st">&quot;cry&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>all_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(datadir)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(all_files)</span></code></pre></div>
+<pre><code>##  [1] &quot;1dei-sf.cif&quot;               &quot;1dei_phases.mtz&quot;          
+##  [3] &quot;2ol9_phases.mtz&quot;           &quot;6vww_xds_ascii_merged.hkl&quot;
+##  [5] &quot;AMS_DATA.cif&quot;              &quot;e-65-00i60-Isup2.rtv&quot;     
+##  [7] &quot;shelxc.log&quot;                &quot;shelxd.log&quot;               
+##  [9] &quot;shelxe_i.log&quot;              &quot;shelxe_o.log&quot;             
+## [11] &quot;xds00_ascii.hkl&quot;</code></pre>
+</div>
+<div id="shelxc" class="section level2">
+<h2>SHELXC</h2>
+<p>Let start to have look at SHELXC log file.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>filename <span class="ot">&lt;-</span> <span class="fu">file.path</span>(datadir,<span class="st">&quot;shelxc.log&quot;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>obj_shelxc <span class="ot">&lt;-</span> <span class="fu">readSHELXlog</span>(filename)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(obj_shelxc)</span></code></pre></div>
+<pre><code>## [1] &quot;data.frame&quot;</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(obj_shelxc)</span></code></pre></div>
+<pre><code>## [1] &quot;Res&quot;      &quot;N_data&quot;   &quot;Chi_sq&quot;   &quot;I_sig&quot;    &quot;Complete&quot; &quot;d_sig&quot;    &quot;CC1_2&quot;</code></pre>
+<p>Plot <span class="math inline">\(Delta*F/sig(Delta*F)\)</span> vs resolution.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(obj_shelxc, <span class="fu">aes</span>(<span class="dv">1</span><span class="sc">/</span>(Res)<span class="sc">^</span><span class="dv">2</span>, d_sig)) <span class="sc">+</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a> <span class="fu">xlab</span>(<span class="fu">expression</span>(h<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> (<span class="fu">ring</span>(A)<span class="sc">^-</span><span class="dv">2</span>))) <span class="sc">+</span> </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="fu">expression</span>(Delta<span class="sc">*</span>F<span class="sc">/</span><span class="fu">sig</span>(Delta<span class="sc">*</span>F)))</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="shelxd" class="section level2">
+<h2>SHELXD</h2>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>filename <span class="ot">&lt;-</span> <span class="fu">file.path</span>(datadir,<span class="st">&quot;shelxd.log&quot;</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>obj_shelxd <span class="ot">&lt;-</span> <span class="fu">readSHELXlog</span>(filename)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(obj_shelxd)</span></code></pre></div>
+<pre><code>## [1] &quot;data.frame&quot;</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(obj_shelxd)</span></code></pre></div>
+<pre><code>## [1] &quot;CCall&quot;  &quot;CCweak&quot;</code></pre>
+<p>Plot CCall vs CCweak using ggplot2</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(obj_shelxd, <span class="fu">aes</span>(CCall, CCweak)) <span class="sc">+</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&#39;CCall&#39;</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">&#39;CCweak&#39;</span>) </span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="shelxe" class="section level2">
+<h2>SHELXE</h2>
+<p>The function <code>readSHELXlog</code> when reading log files from SHELXE five in output a list of dataframes. The user can choose the data frame to use for further analysis.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="do">## read the two hands log files separately</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>filename_i <span class="ot">&lt;-</span> <span class="fu">file.path</span>(datadir,<span class="st">&quot;shelxe_i.log&quot;</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>obj_shelxe_i <span class="ot">&lt;-</span> <span class="fu">readSHELXlog</span>(filename_i)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(obj_shelxe_i)</span></code></pre></div>
+<pre><code>## [1] &quot;list&quot;</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(obj_shelxe_i)</span></code></pre></div>
+<pre><code>## [1] &quot;CYCLE&quot;     &quot;FOM_mapCC&quot; &quot;Site1&quot;     &quot;Site2&quot;</code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>cycle_i <span class="ot">&lt;-</span> obj_shelxe_i<span class="sc">$</span>CYCLE</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(cycle_i)</span></code></pre></div>
+<pre><code>## [1] &quot;data.frame&quot;</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cycle_i)</span></code></pre></div>
+<pre><code>## [1] &quot;wt&quot;       &quot;Contrast&quot; &quot;Connect&quot;  &quot;cycle&quot;</code></pre>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>FOM_mapCC_i <span class="ot">&lt;-</span> obj_shelxe_i<span class="sc">$</span>FOM_mapCC</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(FOM_mapCC_i)</span></code></pre></div>
+<pre><code>## [1] &quot;data.frame&quot;</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(FOM_mapCC_i)</span></code></pre></div>
+<pre><code>## [1] &quot;Res&quot;   &quot;FOM&quot;   &quot;mapCC&quot; &quot;N&quot;</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>Site1_i <span class="ot">&lt;-</span> obj_shelxe_i<span class="sc">$</span>Site1</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(Site1_i)</span></code></pre></div>
+<pre><code>## [1] &quot;data.frame&quot;</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(Site1_i)</span></code></pre></div>
+<pre><code>## [1] &quot;Site&quot;    &quot;x&quot;       &quot;y&quot;       &quot;z&quot;       &quot;occ.Z&quot;   &quot;density&quot;</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>Site2_i <span class="ot">&lt;-</span> obj_shelxe_i<span class="sc">$</span>Site2</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(Site2_i)</span></code></pre></div>
+<pre><code>## [1] &quot;data.frame&quot;</code></pre>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(Site2_i)</span></code></pre></div>
+<pre><code>## [1] &quot;Site&quot;   &quot;x&quot;      &quot;y&quot;      &quot;z&quot;      &quot;h.sig.&quot; &quot;near&quot;   &quot;old&quot;    &quot;near.1&quot;
+## [9] &quot;new&quot;</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>filename_o <span class="ot">&lt;-</span> <span class="fu">file.path</span>(datadir,<span class="st">&quot;shelxe_o.log&quot;</span>)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>obj_shelxe_o <span class="ot">&lt;-</span> <span class="fu">readSHELXlog</span>(filename_o)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(obj_shelxe_o)</span></code></pre></div>
+<pre><code>## [1] &quot;list&quot;</code></pre>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(obj_shelxe_o)</span></code></pre></div>
+<pre><code>## [1] &quot;CYCLE&quot;     &quot;FOM_mapCC&quot; &quot;Site1&quot;     &quot;Site2&quot;</code></pre>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>cycle_o <span class="ot">&lt;-</span> obj_shelxe_o<span class="sc">$</span>CYCLE</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(cycle_i)</span></code></pre></div>
+<pre><code>## [1] &quot;data.frame&quot;</code></pre>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cycle_i)</span></code></pre></div>
+<pre><code>## [1] &quot;wt&quot;       &quot;Contrast&quot; &quot;Connect&quot;  &quot;cycle&quot;</code></pre>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>FOM_mapCC_0 <span class="ot">&lt;-</span> obj_shelxe_o<span class="sc">$</span>FOM_mapCC</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(FOM_mapCC_i)</span></code></pre></div>
+<pre><code>## [1] &quot;data.frame&quot;</code></pre>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(FOM_mapCC_i)</span></code></pre></div>
+<pre><code>## [1] &quot;Res&quot;   &quot;FOM&quot;   &quot;mapCC&quot; &quot;N&quot;</code></pre>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>Site1_o <span class="ot">&lt;-</span> obj_shelxe_o<span class="sc">$</span>Site1</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(Site1_i)</span></code></pre></div>
+<pre><code>## [1] &quot;data.frame&quot;</code></pre>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(Site1_i)</span></code></pre></div>
+<pre><code>## [1] &quot;Site&quot;    &quot;x&quot;       &quot;y&quot;       &quot;z&quot;       &quot;occ.Z&quot;   &quot;density&quot;</code></pre>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>Site2_o <span class="ot">&lt;-</span> obj_shelxe_o<span class="sc">$</span>Site2</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(Site2_i)</span></code></pre></div>
+<pre><code>## [1] &quot;data.frame&quot;</code></pre>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(Site2_i)</span></code></pre></div>
+<pre><code>## [1] &quot;Site&quot;   &quot;x&quot;      &quot;y&quot;      &quot;z&quot;      &quot;h.sig.&quot; &quot;near&quot;   &quot;old&quot;    &quot;near.1&quot;
+## [9] &quot;new&quot;</code></pre>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,113 @@
+---
+title: "Read SHELXC/D/E log file"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Read SHELXC/D/E log file}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<!-- ```{r, include = FALSE} -->
+<!-- knitr::opts_chunk$set( -->
+<!--   collapse = TRUE, -->
+<!--   comment = "#>" -->
+<!-- ) -->
+<!-- ``` -->
+
+
+## Introduction
+The aim of this tutorial is to load the content of the log file, in output from SHELXC/D/E, in the workspace and create dataframes that can be used for further analysis or data visualisation. The `cry` function `readSHELXlog` can load in the R working memory all the log files in output from SHELXC/D/E and give in output a dataframe for SHELXC/D and a list of dataframes for SHELXE.
+
+## Sample SHELXC/D/E log files.
+Some sample files are stored as external data in this package. Among them there are the SHELXC/D/E log files available with the current release. To access the files, first load the `cry` package.
+
+```{r setup}
+library(cry)
+```
+
+Next, have a look at what is included in the external-data directory of `cry`.
+
+```{r echo=TRUE}
+datadir <- system.file("extdata",package="cry")
+all_files <- list.files(datadir)
+print(all_files)
+```
+
+## SHELXC
+Let start to have look at SHELXC log file.
+
+```{r echo=TRUE}
+filename <- file.path(datadir,"shelxc.log")
+obj_shelxc <- readSHELXlog(filename)
+class(obj_shelxc)
+names(obj_shelxc)
+```
+Plot $Delta*F/sig(Delta*F)$ vs resolution.
+
+```{r}
+library(ggplot2)
+ggplot(obj_shelxc, aes(1/(Res)^2, d_sig)) +
+ geom_point() + geom_line() + theme_bw() +
+ xlab(expression(h^2 * (ring(A)^-2))) + 
+  ylab(expression(Delta*F/sig(Delta*F)))
+
+```
+
+
+## SHELXD
+
+```{r echo=TRUE}
+filename <- file.path(datadir,"shelxd.log")
+obj_shelxd <- readSHELXlog(filename)
+class(obj_shelxd)
+names(obj_shelxd)
+```
+Plot CCall vs CCweak using ggplot2
+
+```{r, fig_width = 16, fig_height= 14}
+library(ggplot2)
+
+ggplot(obj_shelxd, aes(CCall, CCweak)) +
+  geom_point() + theme_bw() +
+  xlab('CCall') + ylab('CCweak') 
+```
+
+
+## SHELXE
+The function `readSHELXlog` when reading log files from SHELXE five in output a list of dataframes. The user can choose the data frame to use for further analysis.
+```{r echo=TRUE}
+## read the two hands log files separately
+filename_i <- file.path(datadir,"shelxe_i.log")
+obj_shelxe_i <- readSHELXlog(filename_i)
+class(obj_shelxe_i)
+names(obj_shelxe_i)
+cycle_i <- obj_shelxe_i$CYCLE
+class(cycle_i)
+names(cycle_i)
+FOM_mapCC_i <- obj_shelxe_i$FOM_mapCC
+class(FOM_mapCC_i)
+names(FOM_mapCC_i)
+Site1_i <- obj_shelxe_i$Site1
+class(Site1_i)
+names(Site1_i)
+Site2_i <- obj_shelxe_i$Site2
+class(Site2_i)
+names(Site2_i)
+
+filename_o <- file.path(datadir,"shelxe_o.log")
+obj_shelxe_o <- readSHELXlog(filename_o)
+class(obj_shelxe_o)
+names(obj_shelxe_o)
+cycle_o <- obj_shelxe_o$CYCLE
+class(cycle_i)
+names(cycle_i)
+FOM_mapCC_0 <- obj_shelxe_o$FOM_mapCC
+class(FOM_mapCC_i)
+names(FOM_mapCC_i)
+Site1_o <- obj_shelxe_o$Site1
+class(Site1_i)
+names(Site1_i)
+Site2_o <- obj_shelxe_o$Site2
+class(Site2_i)
+names(Site2_i)
+```

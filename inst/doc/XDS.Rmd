@@ -1,0 +1,271 @@
+---
+title: "Read and analyse an XDS file"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Read and analyse an XDS file}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+<!-- Block with global markdown options
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+-->
+
+## Introduction
+Main aim of this tutorial is to load the full content of two different XDS files in the workspace, to analyse and modify data for one of the two files, and to write the modified content into a new XDS file.
+
+## Sample XDS file
+Some sample files are stored as external data in this package. Among them there are two XDS files available with the current release. To access the files, first load the `cry` package.
+
+```{r, ech=TRUE}
+library(cry)
+```
+
+Next, have a look at what is included in the external-data directory of `cry`.
+
+```{r echo=TRUE}
+datadir <- system.file("extdata",package="cry")
+all_files <- list.files(datadir)
+print(all_files)
+```
+
+The two XDS files we are interested in are "xds00_ascii.hkl" and "6vww_xds_ascii_merged.hkl". Both files can be loaded using function `readXDS_ASCII`.
+
+## Two types of XDS files
+The `cry` function `readXDS_ASCII` can load in the R working memory both XDS reflection files produced by XDS and XSCALE. Their formats differ slightly. Let's start by loading "xds00_ascii.hkl", which is created by the 'CORRECT'component of XDS. The created object is a named list.
+
+```{r echo=TRUE}
+filename <- file.path(datadir,"xds00_ascii.hkl")
+objXDS1 <- readXDS_ASCII(filename)
+class(objXDS1)
+names(objXDS1)
+```
+Each component of \code{objXDS1} is either a named list, or a data frame. More specifically:
+
+1. `processing_info`
+
+   It's a small named list with names `MERGE`, `FRIEDEL`
+   and `PROFILE_FITTING`. All these components are
+   logical variables (TRUE/FALSE). If `MERGE` is TRUE, the file has been produced by XSCALE. If `FRIEDEL` is TRUE, the Bijvoet pairs have been averaged to respect Friedel's law. `PROFILE_FITTING` is only TRUE for files produced by XDS.
+   
+2. `header`
+
+   This is a longer named list with components related to the diffraction experiment including for example the oscillation range, the fraction of polarization, the rough cell parameters' estimate, etc.
+   
+   
+3. `reflections`
+
+   These are the experimental observations, i.e. the integrated intensity, its error, and other qualities for each triplet of Miller indices. They are included in a data frame.
+
+```{r echo=TRUE}
+# 'reflections' is a data frame
+print(class(objXDS1$reflections))
+
+# First 5 observations
+print(objXDS1$reflections[1:5,])
+```
+
+A file produced by  XSCALE has in general a smaller number of data columns:
+
+```{r echo=TRUE}
+# Load the other XDS ascii file
+filename <- file.path(datadir,"6vww_xds_ascii_merged.hkl")
+objXDS2 <- readXDS_ASCII(filename,message=TRUE)
+
+# This file has been produced by XSCALE
+print(objXDS2$processing_info$MERGE)
+
+# First 5 observations
+print(objXDS2$reflections[1:5,])
+```
+
+## The XDS reflections
+Let us focus on the dataset produced by XSCALE. The full set of data is contained, as seen, in a data frame structure. This makes it easy to carry out the usual selection, reshaping and statistical operations normally available in R.
+
+```{r echo=TRUE}
+# Copy reflections data for the first and
+# second dataset, to save on later typing
+refs1 <- objXDS1$reflections
+refs2 <- objXDS2$reflections
+
+# Check whether the set of reflections is unique
+
+# Dataset 1
+nrefs1 <- length(refs1[,1])
+print(nrefs1)
+n_unique1 <- length(unique(refs1[,1:3])[,1])
+print(n_unique1)
+
+# Dataset 2
+nrefs2 <- length(refs2[,1])
+print(nrefs2)
+n_unique2 <- length(unique(refs2[,1:3])[,1])
+print(n_unique2)
+```
+
+Both datasets have only one value per reflection. But the space group associated with the first dataset is P1, while the space group associated with the second dataset is P -3 1 c, belonging to the trigonal crystal system.
+
+```{r echo=TRUE}
+# Space group of first dataset
+print(objXDS1$header$SPACE_GROUP_NUMBER)
+
+# Space group of second dataset
+print(objXDS2$header$SPACE_GROUP_NUMBER)
+
+# Extended Hermann-Mauguin symbol for symmetry n 163
+SG <- translate_SG(163)$msg
+print(SG)
+```
+
+This means that while the reflections of the second file are actually the result of averaging among multiple values of equivalent reflections (both because of multiplicity and symmetry), those of the first file derive from averaging due to multiplicity; once the symmetry for the crystal structure has been established, some of the reflections will be related by symmetry and a new unique set can be calculated after the appropriate merging.
+
+Data selection can be carried out using conditions on the intensities, for example. Let us consider the second dataset and single out those reflections with $\mathrm{I/sigI} > 2$.
+
+```{r echo=TRUE}
+# Names of data columns
+names(refs2)
+
+# Selection based on I/sigI > 2
+idx <- which(refs2$IOBS/refs2$SIGMA.IOBS > 2)
+print(length(idx))  #  21579 reflections have I/sigI > 2
+```
+
+Visually, the separation between reflections with $\mathrm{I/sigI} \leq 2$ and those with $\mathrm{I/sigI} > 2$ can be demonstrated with a frequency histogram.
+
+```{r echo=TRUE,fig.height=3,fig.width=5}
+# Create new I/sigI array
+isi <- refs2$IOBS/refs2$SIGMA.IOBS
+
+# Histogram 
+hh <- hist(isi,breaks=30,plot=FALSE)
+cuts <- cut(hh$breaks,c(-Inf,2,Inf))
+plot(hh,main="I/sigI",xlab="I/sigI",col=cuts)
+```
+
+Data selection can also follow a different ordering of the data. Consider again, in dataset 2, the first 10 reflections:
+
+```{r echo=TRUE}
+# First reflections in original data ordering
+print(refs2[1:10,])
+# 
+```
+
+We could, next, sort the data from the largest to the smallest value of the intensity:
+
+```{r echo=TRUE}
+# First create the ordering index
+idx <- order(refs2$IOBS,decreasing=TRUE)
+
+# Now display the first 10 reflections. They correspond to the
+# 10 reflections with highest intensity
+print(refs2[idx[1:10],])
+```
+
+Or, we could sort the data according to the decreasing values of $\mathrm{I/sigI}$:
+
+```{r echo=TRUE}
+# Ordering index
+idx <- order(refs2$IOBS/refs2$SIGMA.IOBS,decreasing=TRUE)
+
+# Display first 10 highest I/sigI reflections
+print(refs2[idx[1:10],])
+```
+
+To verify that the operation is correct, we can add a new column to the original `refs2` data frame and verify that the previous ordering corresponds, indeed, to decreasing values of $\mathrm{I/sigI}$:
+
+```{r echo=TRUE}
+# Add an I/sigI column
+refs2 <- cbind(refs2,data.frame(IsigI=refs2$IOBS/refs2$SIGMA.IOBS))
+
+# Now display with the order previously obtained
+print(refs2[idx[1:10],])
+```
+
+We can also carry out routine statistics of the values of the data frame. It is very quick, for instance, to obtain summary statistics for all the columns:
+
+```{r echo=TRUE}
+summary(refs2)
+```
+
+## Specific types of data visualisation
+The advantage of having crystallographic data imported in R is that they can be exposed to several types of data visualisation and statistical analysis available in the platform. In this section an histogram visualisation has been created for the original dataset, in which that part of the histogram corresponding to $\mathrm{I/sigI} > 2$ is coloured differently. This is not an operation easily achievable with standard crystallographic software, but relatively easy to carry out using R.
+
+```{r echo=TRUE,fig.height=3,fig.width=5}
+# Initial histogram
+mtxt <- "I/sigI and top quartile for I"
+hh <- hist(refs2$IOBS/refs2$SIGMA.IOBS,breaks=30,main=mtxt,
+           xlab="I/sigI")
+
+# Find top quartile of I
+top_qt <- quantile(refs2$IOBS)[4]
+
+# Data with absolute intensity in the top quartile
+idx <- which(refs2$IOBS >= top_qt)
+
+# Colour portion of histogram in red
+hist(refs2$IOBS[idx]/refs2$SIGMA.IOBS[idx],breaks=30,col=2,add=TRUE)
+```
+
+Another useful but not easily available visualisation is with histograms where lowest or highest resolutions are highlighted in a different colour. A resolution vector with the same ordering of the original data frame must first be calculated with the `cry` function `hkl_to_reso` and this can be then used to select data with wanted resolution.
+
+```{r echo=TRUE,fig.height=3,fig.width=5}
+# Cell parameters are needed to calculate resolutions
+cpars <- objXDS2$header$UNIT_CELL_CONSTANTS
+
+# Resolutions in angstroms. (resos has been computed previously)
+resos <- hkl_to_reso(refs2$H,refs2$K,refs2$L,cpars[1],cpars[2],cpars[3],
+                     cpars[4],cpars[5],cpars[6])
+summary(resos)
+
+# Select high resolution data ( <= 2 angstroms)
+idx <- which(resos <= 2)
+
+# Now draw the histogram
+mtxt <- "I/sigI and top quartile for I"
+hh <- hist(refs2$IOBS/refs2$SIGMA.IOBS,breaks=30,main=mtxt,
+           xlab="I/sigI")
+hist(refs2$IOBS[idx]/refs2$SIGMA.IOBS[idx],breaks=30,col=2,add=TRUE)
+```
+
+The above histogram reflects the unfortunate circumstance in structural x-ray crystallography, according to which high resolution data correspond on average to weak intensities.
+
+## Write data to an XDS file
+The necessity to modify existing XDS ascii files or to simulate new ones (by developers to test software, for example) can be satisfied with the use of the `writeXDS_ASCII` function. The nature and quality of the file produced will depend on the feasibility and accuracy of the information provided. For this reason, it is more difficult to write an XDS ascii file for unmerged data because a lot of information of an experimental nature has to be provided so to produce a sensible header.
+
+In this section the original data from the "6vww_xds_ascii_merged.hkl" file will be truncated to 2 angstroms and written to a new XDS ascii file with a different date.
+
+```{r echo=TRUE}
+# Date
+ddd <- as.character(Sys.Date())
+stmp <- strsplit(ddd,"-")[[1]]
+allMonths <- c("Jan","Feb","Mar","Apr","May","Jun",
+               "Jul","Aug","Sep","Oct","Nov","Dec")
+objXDS2$header$DATE <- paste0(stmp[3],"-",
+            allMonths[as.integer(stmp[2])],"-",stmp[1])
+
+# Generated by
+objXDS2$header$GENERATED_BY <- "CRY"
+
+# Data to 2 angstroms resolution
+idx <- which(resos >= 2)
+objXDS2$reflections <- objXDS2$reflections[idx,]
+
+# Temporary directory for output
+tdir <- tempdir()
+fname <- file.path(tdir,"new.hkl")
+
+# Write changed data to the new XDS ascii file
+writeXDS_ASCII(objXDS2$processing_info,objXDS2$header,
+               objXDS2$reflections,fname)
+```
+
+Data from the new XDS ascii file can either be explored using XDS software, or read back into R using again `readXDS_ASCII`.
+
+```{r echo=TRUE}
+# Read data from "new.hkl"
+newXDS <- readXDS_ASCII(fname,message=TRUE)
+```

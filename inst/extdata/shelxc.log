@@ -1,0 +1,61 @@
+
+  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  +  SHELXC - Create input files for SHELXD and SHELXE - Version 2016/1  +
+  +  Copyright (c) George M. Sheldrick 2003-16                           +
+  +  fae_kappa                       Started at 10:47:15 on 13 Mar 2017  +
+  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+   623217 Reflections read from SAD file ep_XDS_ASCII.HKL
+
+   138919 Unique reflections, highest resolution  1.390 Angstroms
+    110.1 Friedel pairs used on average for local scaling
+
+ Resl.   Inf.  7.45  4.58  3.45  2.82  2.41  2.12  1.91  1.74  1.60  1.49  1.39
+ N(data)    1038  3235  5827  8580 11268 14077 15911 19188 22043 22436 15316
+ Chi-sq     0.90  0.55  0.47  0.51  0.55  0.54  0.54  0.55  0.53  0.53  0.57
+ <I/sig>    60.4  52.2  48.7  35.9  23.4  16.9  10.5   5.9   2.9   1.7   0.8
+ %Complete  85.7  87.5  93.3  95.4  95.5  96.3  94.5  95.5  93.8  89.4  50.7
+ Multipl.    4.5   4.5   4.4   4.6   4.4   4.6   4.4   4.6   4.5   4.5   4.4
+ R(pim)%    2.82  2.91  2.49  3.20  4.43  5.31  7.60 12.62 23.83 40.25 75.83
+ Ranom%    12.51 11.49  8.94 11.57 14.77 16.69 21.11 31.81 55.43 91.23 174.7
+ <d"/sig>   5.91  4.50  3.13  2.76  2.17  1.73  1.33  1.09  0.89  0.79  0.67
+ CC(1/2)    97.7  96.1  90.5  85.9  78.7  66.6  50.9  36.7  19.5   5.4  -3.8
+
+ For zero signal <d'/sig> and <d"/sig> should be about 0.80
+
+    63196 Reflections written to fae_kappa_fa.hkl for input to SHELXD/E
+
+   138919 Reflections written to fae_kappa.hkl for input to SHELXE
+
+   138919 Reflections written to fae_kappa_sad.cif containing:
+ h, k, l, I, sigI, I(+), sigI(+), I(-), sigI(-) and free-R flag
+
+ Dataset  <|E^2-1|>  Max.resln.(A)
+ SAD        0.786      1.390
+
+ If <|E^2-1|> is less than about 0.68, it is likely that the structure
+ is twinned or that F has been read in as intensity (specify -f!)
+
+ File fae_kappa_fa.ins written for input to SHELXD:
+
+ TITL fae_kappa_fa.ins SAD in P212121
+ CELL 0.98000 65.51 108.56 113.13 90.00 90.00 90.00
+ LATT -1
+ SYMM 1/2-X, -Y, 1/2+Z
+ SYMM -X, 1/2+Y, 1/2-Z
+ SYMM 1/2+X, 1/2-Y, -Z
+ SFAC SE
+ UNIT 128
+ FIND 8
+ SHEL 999 1.9
+ MIND -1.5 -0.1
+ PATS
+ NTRY 1000
+ SEED 1
+ HKLF 3
+ END 
+
+  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  +  SHELXC for fae_kappa finished at 10:47:17 on 13 Mar 2017            +
+  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
