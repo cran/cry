@@ -1,10 +1,12 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# cry
+# cry <img src='man/figures/logo.png' align="right" height="128" />
 
 <!-- badges: start -->
 
+[![CRAN
+status](https://www.r-pkg.org/badges/version/cry)](https://CRAN.R-project.org/package=cry)
 <!-- badges: end -->
 
 *cry* is an R package to make it easier dealing with crystallographic
@@ -74,25 +76,25 @@ class(lCIF$HEADER)   # It's a list
 
 # Is it a named list?
 names(lCIF$HEADER)  # Yes
-#> [1] "ENTRY"        "CELL"         "WAVELENGTHID" "WAVELENGTH"   "HIGH_RES"    
-#> [6] "LOW_RES"      "SGN"          "HALL"         "HM"
+#> [1] "TITLE"      "CELL"       "SGN"        "HALL"       "HM"        
+#> [6] "SHELX_CODE" "F_000"      "HIGH_RES"
 
 # What's the space group name for this crystal structure?
 print(lCIF$HEADER$HM)
-#> [1] "P 21 21 21"
+#> [1] NA
 
 # What's the space group number corresponding to P 21 21 21?
 # Use one of cry's functions
 xHM <- lCIF$HEADER$HM
 translate_SG(xHM,SG_in="xHM",SG_out="number")$msg
-#> [1] 19
+#> [1] "Something wrong in your input:\n   1) the symbol or number input for this space group does not exist\n   2) if your inpur was a number, perhaps for this space group there are not that many settings"
 
 # ... and the unit cell parameters?
 cpars <- c(lCIF$HEADER$CELL$A$VAL,lCIF$HEADER$CELL$B$VAL,
            lCIF$HEADER$CELL$C$VAL,lCIF$HEADER$CELL$ALPHA$VAL,
            lCIF$HEADER$CELL$BETA$VAL,lCIF$HEADER$CELL$GAMMA$VAL)
 print(cpars)
-#> [1] 57.4 56.3 23.0 90.0 90.0 90.0
+#> [1] NA NA NA NA NA NA
 
 # The unit cell belongs to the orthorombic system,
 # as it should be, due to symmetry (cry function)

@@ -14,7 +14,19 @@
 
 <title>Read and analyse an MTZ file</title>
 
-<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -24,6 +36,7 @@
   div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
   ul.task-list{list-style: none;}
     </style>
+
 
 
 <style type="text/css">
@@ -107,13 +120,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -125,7 +145,187 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
 
 
 
@@ -146,27 +346,35 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 -->
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>Main aim of this tutorial is to load the full content of an MTZ file in the workspace, to analyse and modify data, and to write the modified content into a new MTZ file.</p>
+<p>Main aim of this tutorial is to load the full content of an MTZ file
+in the workspace, to analyse and modify data, and to write the modified
+content into a new MTZ file.</p>
 </div>
 <div id="sample-mtz-file" class="section level2">
 <h2>Sample MTZ file</h2>
-<p>Some sample files are stored as external data in this package. These are the MTZ files available with the current release. To access the file, first load the <code>cry</code> package.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cry)</span></code></pre></div>
-<p>Next, have a look at what is included in the external-data directory of <code>cry</code>.</p>
+<p>Some sample files are stored as external data in this package. These
+are the MTZ files available with the current release. To access the
+file, first load the <code>cry</code> package.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cry)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code></pre></div>
+<p>Next, have a look at what is included in the external-data directory
+of <code>cry</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>datadir <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>,<span class="at">package=</span><span class="st">&quot;cry&quot;</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>all_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(datadir)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(all_files)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;1dei-sf.cif&quot;               &quot;1dei_phases.mtz&quot;          </span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [3] &quot;2ol9_phases.mtz&quot;           &quot;6vww_xds_ascii_merged.hkl&quot;</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [5] &quot;AMS_DATA.cif&quot;              &quot;e-65-00i60-Isup2.rtv&quot;     </span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [7] &quot;shelxc.log&quot;                &quot;shelxd.log&quot;               </span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [9] &quot;shelxe_i.log&quot;              &quot;shelxe_o.log&quot;             </span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [11] &quot;xds00_ascii.hkl&quot;</span></span></code></pre></div>
-<p>We are interested in the MTZ file “1dei_phases.mtz”. This file can be loaded using function <code>readMTZ</code>.</p>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [3] &quot;2ol9_phases.mtz&quot;           &quot;3syu.cif&quot;                 </span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [5] &quot;6vww_xds_ascii_merged.hkl&quot; &quot;AMS_DATA.cif&quot;             </span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [7] &quot;e-65-00i60-Isup2.rtv&quot;      &quot;shelxc.log&quot;               </span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [9] &quot;shelxd.log&quot;                &quot;shelxe_i.log&quot;             </span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [11] &quot;shelxe_o.log&quot;              &quot;xds00_ascii.hkl&quot;</span></span></code></pre></div>
+<p>We are interested in the MTZ file “1dei_phases.mtz”. This file can be
+loaded using function <code>readMTZ</code>.</p>
 </div>
 <div id="the-structure-of-an-mtz-file-in-r" class="section level2">
 <h2>The structure of an MTZ file in R</h2>
-<p>Let’s load “1dei_phases.mtz” in memory. The created object is a named list.</p>
+<p>Let’s load “1dei_phases.mtz” in memory. The created object is a named
+list.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>filename <span class="ot">&lt;-</span> <span class="fu">file.path</span>(datadir,<span class="st">&quot;1dei_phases.mtz&quot;</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>objMTZ <span class="ot">&lt;-</span> <span class="fu">readMTZ</span>(filename)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in readChar(f, 4): truncating string with embedded nuls</span></span>
@@ -174,20 +382,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;list&quot;</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(objMTZ)</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;reflections&quot;  &quot;header&quot;       &quot;batch_header&quot;</span></span></code></pre></div>
-<p>Each component of  is either a named list, or a data frame. More specifically:</p>
+<p>Each component of is either a named list, or a data frame. More
+specifically:</p>
 <ol style="list-style-type: decimal">
 <li><p><code>reflections</code></p>
-<p>It’s a data frame. It contains the actual x-ray diffraction data from a given crystal.</p></li>
+<p>It’s a data frame. It contains the actual x-ray diffraction data from
+a given crystal.</p></li>
 <li><p><code>header</code></p>
-<p>It’s a named list. It contains information on the crystal used to obtain the x-ray diffraction data and on the diffraction experiment, in general.</p></li>
-<li><p><code>batch_header</code> It’s a named list. It gets filled only when the MTZ file<br />
+<p>It’s a named list. It contains information on the crystal used to
+obtain the x-ray diffraction data and on the diffraction experiment, in
+general.</p></li>
+<li><p><code>batch_header</code> It’s a named list. It gets filled only
+when the MTZ file<br />
 includes so-called “unmerged” data.</p></li>
 </ol>
-<p>For the merged MTZ file we are exploring in this tutorial, the <code>batch_header</code> is <code>NULL</code>.</p>
+<p>For the merged MTZ file we are exploring in this tutorial, the
+<code>batch_header</code> is <code>NULL</code>.</p>
 </div>
 <div id="the-mtz-header" class="section level2">
 <h2>The MTZ <code>header</code></h2>
-<p>This is a named list. The names hint at the content of the specific components.</p>
+<p>This is a named list. The names hint at the content of the specific
+components.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>hdr <span class="ot">&lt;-</span> objMTZ<span class="sc">$</span>header</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(hdr)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;list&quot;</span></span>
@@ -195,10 +410,24 @@ includes so-called “unmerged” data.</p></li>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;TITLE&quot;   &quot;NCOL&quot;    &quot;CELL&quot;    &quot;SORT&quot;    &quot;SYMINF&quot;  &quot;RESO&quot;    &quot;NDIF&quot;   </span></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [8] &quot;SYMM&quot;    &quot;PROJECT&quot; &quot;CRYSTAL&quot; &quot;DATASET&quot; &quot;DCELL&quot;   &quot;DWAVEL&quot;  &quot;COLUMN&quot; </span></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [15] &quot;COLSRC&quot;</span></span></code></pre></div>
-<p>For example, <code>NCOL</code> is the number of columns of the <code>reflections</code> data frame, <code>CELL</code> contains the crystal unit cell parameters and <code>SYMM</code> includes information on the crystal symmetry.</p>
-A merged MTZ file stores reflections x-ray data in a hierarchical way. The main purpose of collecting x-ray data is to determine the 3D structure of the molecule arranged in an ordered crystallographic lattice. Reflections related to a same molecule can come from different crystals. Different datasets, corresponding to different rotation sweeps from the same crystal, can be related to a crystal. Each MTZ file can thus include data from several crystals, each crystal giving origin to several datasets. Normally, a single MTZ file will be part of a same project, but this does not necessarily have to be the case. In summary, the hierarchy defining each dataset is:
+<p>For example, <code>NCOL</code> is the number of columns of the
+<code>reflections</code> data frame, <code>CELL</code> contains the
+crystal unit cell parameters and <code>SYMM</code> includes information
+on the crystal symmetry.</p>
+A merged MTZ file stores reflections x-ray data in a hierarchical way.
+The main purpose of collecting x-ray data is to determine the 3D
+structure of the molecule arranged in an ordered crystallographic
+lattice. Reflections related to a same molecule can come from different
+crystals. Different datasets, corresponding to different rotation sweeps
+from the same crystal, can be related to a crystal. Each MTZ file can
+thus include data from several crystals, each crystal giving origin to
+several datasets. Normally, a single MTZ file will be part of a same
+project, but this does not necessarily have to be the case. In summary,
+the hierarchy defining each dataset is:
 <center>
-<em>Project</em> <span class="math inline">\(\quad\Rightarrow\quad\)</span> <em>Crystal</em> <span class="math inline">\(\quad\Rightarrow\quad\)</span> <em>Dataset</em>
+<em>Project</em> <span class="math inline">\(\quad\Rightarrow\quad\)</span> <em>Crystal</em>
+<span class="math inline">\(\quad\Rightarrow\quad\)</span>
+<em>Dataset</em>
 </center>
 <p>For the file loaded we find:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(objMTZ<span class="sc">$</span>header<span class="sc">$</span>PROJECT)</span>
@@ -213,11 +442,22 @@ A merged MTZ file stores reflections x-ray data in a hierarchical way. The main 
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   id    dname</span></span>
 <span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  0 HKL_base</span></span>
 <span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  1   data_1</span></span></code></pre></div>
-<p>The only dataset in this MTZ file is called <em>data_1</em>. It was obtained from x-ray diffraction of a crystal called <em>cryst_1</em>. This crystal is one of the samples belonging to a project called <em>sf_convert</em>. All MTZ files contain, by default, a dataset <em>HKL_base</em> which comes from the crystal <em>HKL_base</em>, which is part of the project <em>HKL_base</em>; this peculiar project is always present to make sure that data observations made only of the Miller indices, are always included. More information on the header’s content can be read in the documentation for <code>readMTZ</code> or <code>readMTZHeader</code>.</p>
+<p>The only dataset in this MTZ file is called <em>data_1</em>. It was
+obtained from x-ray diffraction of a crystal called <em>cryst_1</em>.
+This crystal is one of the samples belonging to a project called
+<em>sf_convert</em>. All MTZ files contain, by default, a dataset
+<em>HKL_base</em> which comes from the crystal <em>HKL_base</em>, which
+is part of the project <em>HKL_base</em>; this peculiar project is
+always present to make sure that data observations made only of the
+Miller indices, are always included. More information on the header’s
+content can be read in the documentation for <code>readMTZ</code> or
+<code>readMTZHeader</code>.</p>
 </div>
 <div id="the-mtz-reflections" class="section level2">
 <h2>The MTZ <code>reflections</code></h2>
-<p>Data are actually contained in this component. It is a data frame whose columns have the names found in the header component <code>COLUMN[,1]</code>:</p>
+<p>Data are actually contained in this component. It is a data frame
+whose columns have the names found in the header component
+<code>COLUMN[,1]</code>:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>objMTZ<span class="sc">$</span>header<span class="sc">$</span>COLUMN[,<span class="dv">1</span>]</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;H&quot;           &quot;K&quot;           &quot;L&quot;           &quot;FP&quot;          &quot;SIGFP&quot;      </span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [6] &quot;FC&quot;          &quot;PHIC&quot;        &quot;FC_ALL&quot;      &quot;PHIC_ALL&quot;    &quot;FWT&quot;        </span></span>
@@ -236,7 +476,13 @@ A merged MTZ file stores reflections x-ray data in a hierarchical way. The main 
 <span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 242.589722     360 0.9999999 145.39508         360</span></span>
 <span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4  51.633461     180 0.9341952  81.84018           0</span></span>
 <span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5  95.545235     360 0.9992544  42.30125         360</span></span></code></pre></div>
-<p>A data frame is the appropriate class for observations like the crystallographic x-ray data. One reason for this is, for instance, that grouping or selection according to a specific criterion can be carried out very easily with a data frame. Let us, as an example, select part of the data using a condition on the Miller indices. We can be interested to select reflections for which <span class="math inline">\(h\)</span> has a specific value; this is shown in the following chunk of code.</p>
+<p>A data frame is the appropriate class for observations like the
+crystallographic x-ray data. One reason for this is, for instance, that
+grouping or selection according to a specific criterion can be carried
+out very easily with a data frame. Let us, as an example, select part of
+the data using a condition on the Miller indices. We can be interested
+to select reflections for which <span class="math inline">\(h\)</span>
+has a specific value; this is shown in the following chunk of code.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List the different values of H</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(objMTZ<span class="sc">$</span>reflections<span class="sc">$</span>H)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1]  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24</span></span>
@@ -289,7 +535,10 @@ A merged MTZ file stores reflections x-ray data in a hierarchical way. The main 
 <span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a><span class="co"># Find out the range of FP/sigFP for the selected reflections</span></span>
 <span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(refs<span class="sc">$</span>FP<span class="sc">/</span>refs<span class="sc">$</span>SIGFP)</span>
 <span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1]  2.374856 56.249997</span></span></code></pre></div>
-<p>Clearly, a lot of different operations and investigations can be carried out on the selected data. A second example involves data for which the signal-to-noise ratio (FP/sigFP) is greater than 1, as shown in the following snippet.</p>
+<p>Clearly, a lot of different operations and investigations can be
+carried out on the selected data. A second example involves data for
+which the signal-to-noise ratio (FP/sigFP) is greater than 1, as shown
+in the following snippet.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>idx <span class="ot">&lt;-</span> <span class="fu">which</span>(objMTZ<span class="sc">$</span>reflections<span class="sc">$</span>FP<span class="sc">/</span>objMTZ<span class="sc">$</span>reflections<span class="sc">$</span>SIGFP <span class="sc">&gt;=</span> <span class="dv">1</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(idx) <span class="co"># 8377 reflections have FP/sigFP &gt;= 1</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 8377</span></span>
@@ -297,11 +546,20 @@ A merged MTZ file stores reflections x-ray data in a hierarchical way. The main 
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># The reflections can be extracted</span></span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>refs <span class="ot">&lt;-</span> objMTZ<span class="sc">$</span>reflections[idx,]</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Histogram of I/sigI</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(refs<span class="sc">$</span>FP<span class="sc">/</span>refs<span class="sc">$</span>SIGFP,<span class="at">breaks=</span><span class="dv">30</span>,</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">&quot;FP/sigFP&quot;</span>,<span class="at">xlab=</span><span class="st">&quot;FP/sigFP&quot;</span>)</span></code></pre></div>
-<p><img src="data:image/png;base64,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" /><!-- --></p>
-<p>A third example is related to the reflections’ resolution. Once it has been calculated (cell parameters are needed to do that), data can be selected within a given resolution range (a so-called <em>resolution shell</em>). There is a function in <code>cry</code>, called <code>hkl_to_reso</code>, which calculates the resolution in angstroms for a reflection of Miller indices <span class="math inline">\(h, k, l\)</span>.</p>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Histogram of I/sigI with ggplot2</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> refs, <span class="fu">aes</span>(FP<span class="sc">/</span>SIGFP)) <span class="sc">+</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">fill =</span> <span class="st">&quot;#5494AB&quot;</span>, <span class="at">colour =</span> <span class="st">&quot;#125CD2&quot;</span>, <span class="at">binwidth =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&quot;FP/sigFP&quot;</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">&quot;Number of Reflections&quot;</span>) <span class="sc">+</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Signal-to-noise ratio FP/sigFP greater than 1&quot;</span>) <span class="sc">+</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_cry</span>()</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>A third example is related to the reflections’ resolution. Once it
+has been calculated (cell parameters are needed to do that), data can be
+selected within a given resolution range (a so-called <em>resolution
+shell</em>). There is a function in <code>cry</code>, called
+<code>hkl_to_reso</code>, which calculates the resolution in angstroms
+for a reflection of Miller indices <span class="math inline">\(h, k,
+l\)</span>.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract cell parameters from header</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>cpars <span class="ot">&lt;-</span> objMTZ<span class="sc">$</span>header<span class="sc">$</span>CELL</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cpars)</span>
@@ -322,7 +580,9 @@ A merged MTZ file stores reflections x-ray data in a hierarchical way. The main 
 <span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 5.74</span></span>
 <span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="fu">hkl_to_reso</span>(<span class="dv">10</span>,<span class="dv">0</span>,<span class="sc">-</span><span class="dv">20</span>,a,b,c,aa,bb,cc)</span>
 <span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1.127592</span></span></code></pre></div>
-<p>Once resolutions are calculated (and the calculation is done on data having the same order as the original reflections), data within a given resolution shell can be selected.</p>
+<p>Once resolutions are calculated (and the calculation is done on data
+having the same order as the original reflections), data within a given
+resolution shell can be selected.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>resos <span class="ot">&lt;-</span> <span class="fu">hkl_to_reso</span>(objMTZ<span class="sc">$</span>reflections<span class="sc">$</span>H,</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                     objMTZ<span class="sc">$</span>reflections<span class="sc">$</span>K,</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>                     objMTZ<span class="sc">$</span>reflections<span class="sc">$</span>L,</span>
@@ -339,8 +599,26 @@ A merged MTZ file stores reflections x-ray data in a hierarchical way. The main 
 </div>
 <div id="output-to-a-new-mtz-file" class="section level2">
 <h2>Output to a new MTZ file</h2>
-<p>In order to investigate specific ideas it might be worth to modify the observations in a specific way and to write them out to a new MTZ file to be later handled by the tools proper of the <a href="https://www.ccp4.ac.uk">CCP4</a> family of programs for crystallography. The <code>cry</code> function to write reflections content to an MTZ file is called <code>writeMTZ</code>. In order to make this a flexible function, it has been deemed appropriate to take as input the three named lists returned by <code>readMTZ</code>. These will have been changed by the user, prior to use with <code>writeMTZ</code>. By default, the MTZ file title is left unchanged and the <code>batch_header</code> list is set to <code>NULL</code>; thus by default the MTZ file is assumed to be a merged-reflections file. Special attention will have to be devoted to parts of the <code>header</code> list, which store information on the observations. These are, for instance, <code>NCOL</code>, <code>SORT</code>, <code>RESO</code>, <code>COLUMN</code>, etc. An example can help to clarify this concept.</p>
-<p>A typical modifications of the observed data is when high-resolution reflections are eliminated. This means that the number of reflections and other quantities in the <code>header</code> will have to be changed.</p>
+<p>In order to investigate specific ideas it might be worth to modify
+the observations in a specific way and to write them out to a new MTZ
+file to be later handled by the tools proper of the <a href="https://www.ccp4.ac.uk">CCP4</a> family of programs for
+crystallography. The <code>cry</code> function to write reflections
+content to an MTZ file is called <code>writeMTZ</code>. In order to make
+this a flexible function, it has been deemed appropriate to take as
+input the three named lists returned by <code>readMTZ</code>. These will
+have been changed by the user, prior to use with <code>writeMTZ</code>.
+By default, the MTZ file title is left unchanged and the
+<code>batch_header</code> list is set to <code>NULL</code>; thus by
+default the MTZ file is assumed to be a merged-reflections file. Special
+attention will have to be devoted to parts of the <code>header</code>
+list, which store information on the observations. These are, for
+instance, <code>NCOL</code>, <code>SORT</code>, <code>RESO</code>,
+<code>COLUMN</code>, etc. An example can help to clarify this
+concept.</p>
+<p>A typical modifications of the observed data is when high-resolution
+reflections are eliminated. This means that the number of reflections
+and other quantities in the <code>header</code> will have to be
+changed.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Copy original data to 2 separate lists</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>refs <span class="ot">&lt;-</span> objMTZ<span class="sc">$</span>reflections</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>hdr <span class="ot">&lt;-</span> objMTZ<span class="sc">$</span>header</span>
@@ -364,7 +642,10 @@ A merged MTZ file stores reflections x-ray data in a hierarchical way. The main 
 <span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>obsmax <span class="ot">&lt;-</span> <span class="fu">apply</span>(refs,<span class="dv">2</span>,max,<span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
 <span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>hdr<span class="sc">$</span>COLUMN[,<span class="dv">3</span>] <span class="ot">&lt;-</span> obsmin                   <span class="co"># COLUMN</span></span>
 <span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>hdr<span class="sc">$</span>COLUMN[,<span class="dv">4</span>] <span class="ot">&lt;-</span> obsmax</span></code></pre></div>
-<p>The data frame <code>COLSRC</code> contains the date and time at which the specific data columns have been generated. This can be changed with the <code>cry</code> function <code>change_COLSRC</code>; the new date and time is the current one.</p>
+<p>The data frame <code>COLSRC</code> contains the date and time at
+which the specific data columns have been generated. This can be changed
+with the <code>cry</code> function <code>change_COLSRC</code>; the new
+date and time is the current one.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Original COLSRC</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(hdr<span class="sc">$</span>COLSRC)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         labels                     created id</span></span>
@@ -391,30 +672,33 @@ A merged MTZ file stores reflections x-ray data in a hierarchical way. The main 
 <span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="co"># New COLSRC</span></span>
 <span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(hdr<span class="sc">$</span>COLSRC)</span>
 <span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         labels                     created id</span></span>
-<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1            H CREATED_02/05/2021_10:26:46  0</span></span>
-<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2            K CREATED_02/05/2021_10:26:46  0</span></span>
-<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3            L CREATED_02/05/2021_10:26:46  0</span></span>
-<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4           FP CREATED_02/05/2021_10:26:46  1</span></span>
-<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5        SIGFP CREATED_02/05/2021_10:26:46  1</span></span>
-<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6           FC CREATED_02/05/2021_10:26:46  1</span></span>
-<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7         PHIC CREATED_02/05/2021_10:26:46  1</span></span>
-<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 8       FC_ALL CREATED_02/05/2021_10:26:46  1</span></span>
-<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 9     PHIC_ALL CREATED_02/05/2021_10:26:46  1</span></span>
-<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10         FWT CREATED_02/05/2021_10:26:46  1</span></span>
-<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11        PHWT CREATED_02/05/2021_10:26:46  1</span></span>
-<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12      DELFWT CREATED_02/05/2021_10:26:46  1</span></span>
-<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13     PHDELWT CREATED_02/05/2021_10:26:46  1</span></span>
-<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 14         FOM CREATED_02/05/2021_10:26:46  1</span></span>
-<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 15   FC_ALL_LS CREATED_02/05/2021_10:26:46  1</span></span>
-<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 16 PHIC_ALL_LS CREATED_02/05/2021_10:26:46  1</span></span></code></pre></div>
-<p>Once all changes have been done, the list components are ready to be saved out to a new MTZ file called, in this specific instance, “new.mtz”.</p>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1            H CREATED_05/10/2022_15:03:42  0</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2            K CREATED_05/10/2022_15:03:42  0</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3            L CREATED_05/10/2022_15:03:42  0</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4           FP CREATED_05/10/2022_15:03:42  1</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5        SIGFP CREATED_05/10/2022_15:03:42  1</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6           FC CREATED_05/10/2022_15:03:42  1</span></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7         PHIC CREATED_05/10/2022_15:03:42  1</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 8       FC_ALL CREATED_05/10/2022_15:03:42  1</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 9     PHIC_ALL CREATED_05/10/2022_15:03:42  1</span></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10         FWT CREATED_05/10/2022_15:03:42  1</span></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11        PHWT CREATED_05/10/2022_15:03:42  1</span></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12      DELFWT CREATED_05/10/2022_15:03:42  1</span></span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13     PHDELWT CREATED_05/10/2022_15:03:42  1</span></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 14         FOM CREATED_05/10/2022_15:03:42  1</span></span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 15   FC_ALL_LS CREATED_05/10/2022_15:03:42  1</span></span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 16 PHIC_ALL_LS CREATED_05/10/2022_15:03:42  1</span></span></code></pre></div>
+<p>Once all changes have been done, the list components are ready to be
+saved out to a new MTZ file called, in this specific instance,
+“new.mtz”.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Temporary directory for output</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>tdir <span class="ot">&lt;-</span> <span class="fu">tempdir</span>()</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>fname <span class="ot">&lt;-</span> <span class="fu">file.path</span>(tdir,<span class="st">&quot;new.mtz&quot;</span>)</span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Write changed data to the new MTZ file</span></span>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="fu">writeMTZ</span>(refs,hdr,fname,<span class="at">title=</span><span class="st">&quot;New truncated dataset&quot;</span>)</span></code></pre></div>
-<p>Data from the new MTZ file can either be explored using CCP4 programs, or read back into R using again <code>readMTZ</code>.</p>
+<p>Data from the new MTZ file can either be explored using CCP4
+programs, or read back into R using again <code>readMTZ</code>.</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read data from &quot;new.mtz&quot;</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>newMTZ <span class="ot">&lt;-</span> <span class="fu">readMTZ</span>(fname,<span class="cn">TRUE</span>)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in readChar(f, 4): truncating string with embedded nuls</span></span>

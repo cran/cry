@@ -79,6 +79,7 @@
 #'    Default value is \code{message=FALSE}.
 #' @return A named list. Each name correspond to a valid field in the mtz
 #'    header (see details).
+#'
 #' @examples
 #' datadir <- system.file("extdata",package="cry")
 #' filename <- file.path(datadir,"1dei_phases.mtz")
@@ -3533,7 +3534,7 @@ sysabs  <- function(hkl,SG) {
 #' @export
 change_COLSRC <- function(hdr) {
   # Get date and time from system
-  tt <- strsplit(as.character(Sys.time())," ")[[1]]
+  tt <- strsplit(format(Sys.time())," ")[[1]]
   ss <- strsplit(tt[1],"-")[[1]]
   g <- paste0(ss[3],"/",ss[2],"/",ss[1])
   stmp <- paste0("CREATED_",g,"_",tt[2])

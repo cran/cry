@@ -7,12 +7,12 @@
 op_xyz_to_matrix(op_xyz)
 }
 \arguments{
-\item{op_xyz}{A symmetry or centering operation in the form of a human-readable string, e.g.
-'-x+1/2,-y,z+1/2'.}
+\item{op_xyz}{A symmetry or centering operation in the form of a
+human-readable string, e.g. -x+1/2,-y,z+1/2'.}
 }
 \value{
-mat_ops A named list including a \eqn{3\times 3} matrix 'R' and a \eqn{3\times 1}
-vector 'T'.
+mat_ops A named list including a \eqn{3\times 3} matrix 'R' and a
+                \eqn{3\times 1} vector 'T'.
 }
 \description{
 Returns a \eqn{3\times 3} matrix and \eqn{3\times 1} vector corresponding to either a

@@ -14,12 +14,12 @@
 #' @examples
 #' datadir <- system.file("extdata",package="cry")
 #' filename <- file.path(datadir,"shelxc.log")
-#' ltmp <- readSHELXlog(filename)
+#' ltmp <- read_SHELX_log(filename)
 #' print(names(ltmp))
 #'
 #' @export
 
-readSHELXlog <- function(filename)
+read_SHELX_log <- function(filename)
 {
   header <- scan(filename, nlines = 3, what = character(), quiet = TRUE)
   logfile <- scan(filename, what = character(), quiet = TRUE)

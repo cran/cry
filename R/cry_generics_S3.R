@@ -26,7 +26,8 @@
 #' @importFrom stats na.omit sd
 #' @importFrom utils read.table write.table
 #' @importFrom methods is
-#' @importFrom stats complete.cases
+#' @importFrom stats complete.cases fft
+#'
 #' @export
 create_unit_cell <- function(a,...) UseMethod("create_unit_cell")
 

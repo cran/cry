@@ -18,33 +18,36 @@
 #'   \item{3) Extended Hermann-Mauguin symbol (e.g. 'P 1 1 21')}
 #' }
 #' If more than one setting is implied in an ambiguous way in the input value,
-#' then the first setting will be selected by default for the output value, unless
-#' argument "set" is set to another value.
+#' then the first setting will be selected by default for the output value,
+#' unless argument "set" is set to another value.
 #'
-#' @param value A string or an integer number corresponding to the space group being
-#'  investigated.
-#' @param SG_in A string representing the space group format for the input. Possible values are:
-#'  \itemize{
-#'    \item{1) "number"}
-#'    \item{2) "ccp4"}
-#'    \item{3) "Hall"}
-#'    \item{4) "xHM"}
-#'    \item{5) "old"}
-#'  }
-#' @param SG_out A string representing the space group format for the output. Possible values are:
-#'  \itemize{
-#'    \item{1) "number"}
-#'    \item{2) "ccp4"}
-#'    \item{3) "Hall"}
-#'    \item{4) "xHM"}
-#'    \item{5) "old"}
-#'  }
+#' @param value A string or an integer number corresponding to the space group
+#'              being investigated.
+#' @param SG_in A string representing the space group format for the input.
+#'              Possible values are:
+#'              \itemize{
+#'                \item{1) "number"}
+#'                \item{2) "ccp4"}
+#'                \item{3) "Hall"}
+#'                \item{4) "xHM"}
+#'                \item{5) "old"}
+#'              }
+#' @param SG_out A string representing the space group format for the output.
+#'               Possible values are:
+#'               \itemize{
+#'                 \item{1) "number"}
+#'                 \item{2) "ccp4"}
+#'                 \item{3) "Hall"}
+#'                 \item{4) "xHM"}
+#'                 \item{5) "old"}
+#'               }
 #' @param set Specific setting for the given space group. A number like 1,2,...
-#'   It is used if for a same symbol there are more than one choice.
-#' @return list_SG A named list with two fields. The first field, "msg", is a character string
-#'   representing the space group format needed as output. Possible values are the same as
-#'   those for SG_in. The second field, "ans", is TRUE only if a valid symbol for "msg" is
-#'   found.
+#'            It is used if for a same symbol there are more than one choice.
+#' @return list_SG A named list with two fields. The first field, "msg", is a
+#'                 character string representing the space group format needed
+#'                 as output. Possible values are the same as those for SG_in.
+#'                 The second field, "ans", is TRUE only if a valid symbol for
+#'                 "msg" is found.
 #'
 #' @examples
 #' # Space Group P1 corresponds to number 1
@@ -231,10 +234,10 @@ syminfo_to_op_xyz_list <- function(SG) {
 #' Where symmetry operations in human-readable form are useful for the subjective reasoning
 #' in crystallography, their mathematical counterpart is needed for all practical calculations.
 #'
-#' @param op_xyz A symmetry or centering operation in the form of a human-readable string, e.g.
-#'  '-x+1/2,-y,z+1/2'.
-#' @return mat_ops A named list including a \eqn{3\times 3} matrix 'R' and a \eqn{3\times 1}
-#' vector 'T'.
+#' @param op_xyz A symmetry or centering operation in the form of a
+#'               human-readable string, e.g. -x+1/2,-y,z+1/2'.
+#' @return mat_ops A named list including a \eqn{3\times 3} matrix 'R' and a
+#'                 \eqn{3\times 1} vector 'T'.
 #'
 #' @examples
 #' # Reflection and translation

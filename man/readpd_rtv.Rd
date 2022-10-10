@@ -2,14 +2,14 @@
 % Please edit documentation in R/pdrtv.R
 \name{readpd_rtv}
 \alias{readpd_rtv}
-\title{Reads and output an CIF file}
+\title{Reads and output a CIF file for powder diffraction}
 \usage{
-readpd_rtv(filename, messages = FALSE)
+readpd_rtv(filename, message = FALSE)
 }
 \arguments{
 \item{filename}{A character string. The path to a valid CIF file.}
 
-\item{messages}{A logical variable. If TRUE (default) the function prints
+\item{message}{A logical variable. If TRUE (default) the function prints
 a message highlighting what is included in the cif file.}
 }
 \value{
@@ -17,7 +17,7 @@ A named list. Each name correspond to a valid field in the powder
    diffraction Rietveld processed CIF.
 }
 \description{
-Reads and output an CIF file
+Reads and output a CIF file for powder diffraction
 }
 \examples{
 datadir <- system.file("extdata",package="cry")

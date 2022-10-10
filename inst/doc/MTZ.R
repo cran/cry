@@ -6,6 +6,7 @@ knitr::opts_chunk$set(
 
 ## ---- ech=TRUE----------------------------------------------------------------
 library(cry)
+library(ggplot2)
 
 ## ----echo=TRUE----------------------------------------------------------------
 datadir <- system.file("extdata",package="cry")
@@ -49,16 +50,19 @@ refs[1:10,]
 # Find out the range of FP/sigFP for the selected reflections
 range(refs$FP/refs$SIGFP)
 
-## ----echo=TRUE,fig.height=3,fig.width=5---------------------------------------
+## ----echo=TRUE,fig.height=5,fig.width=8---------------------------------------
 idx <- which(objMTZ$reflections$FP/objMTZ$reflections$SIGFP >= 1)
 length(idx) # 8377 reflections have FP/sigFP >= 1
 
 # The reflections can be extracted
 refs <- objMTZ$reflections[idx,]
 
-# Histogram of I/sigI
-hist(refs$FP/refs$SIGFP,breaks=30,
-     main="FP/sigFP",xlab="FP/sigFP")
+# Histogram of I/sigI with ggplot2
+ggplot(data = refs, aes(FP/SIGFP)) +
+  geom_histogram(fill = "#5494AB", colour = "#125CD2", binwidth = 3) +
+  xlab("FP/sigFP") + ylab("Number of Reflections") +
+  labs(title = "Signal-to-noise ratio FP/sigFP greater than 1") +
+  theme_cry()
 
 ## ----echo=TRUE----------------------------------------------------------------
 # Extract cell parameters from header

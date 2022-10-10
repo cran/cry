@@ -3,7 +3,7 @@
 #
 # Functions connected to reflections data.
 
-#' Reads and output an CIF file
+#' Reads and output a CIF file
 #'
 #' @param filename A character string. The path to a valid CIF file.
 #' @param message A logical variable. If TRUE (default) the function prints
@@ -30,7 +30,7 @@ readCIF <- function(filename, message=FALSE){
   ch <- apply(mat, 1, function(x) lcif[(x[1]+1):(x[2]-1)])
   crystal_summary <- lapply(ch, ucheck, pattern="_publ_author_name")
   symmetry <- lapply(ch, ucheck, pattern="_space_group_symop_operation")
-  reflection <- lapply(ch, ucheck, pattern="_refln.index_h")
+  reflection <- lapply(ch, ucheck, pattern="_refln_index_h")
   coordinates <- lapply(ch, ucheck, pattern="_atom_site_fract_x")
   anisotropy <- lapply(ch, ucheck, pattern="_atom_site_aniso_label")
   symbol <- lapply(ch, ucheck, pattern="_atom_type_symbol")
@@ -41,11 +41,12 @@ readCIF <- function(filename, message=FALSE){
 
   intro <- r_summ(lcif)
   symm <- ansnull(symmetry)
-  #reflections <- if (is.na(nanona(reflection)) == FALSE) r_angle(reflection) else NULL
-  reflections <- ansnull(reflection)
-  coordinate <- if (is.na(nanona(coordinates)) == FALSE) clean(r_positions(nanona(coordinates))) else NULL
+  reflections1 <- r_reflections1(lcif)
+  reflections2 <- if (is.na(nanona(reflection)) == FALSE) r_reflections2(nanona(reflection)) else NA
+  reflections <- r_reflcs(reflections1,reflections2)
+  coordinate <- if (is.na(nanona(coordinates)) == FALSE) clean(r_spositions(nanona(coordinates))) else NULL
   #coordinate <- r_positions(ansnull(coordinates))
-  anisotropies <- if (is.na(nanona(anisotropy)) == FALSE) clean(r_aniso(nanona(anisotropy))) else NULL
+  anisotropies <- if (is.na(nanona(anisotropy)) == FALSE) clean(r_saniso(nanona(anisotropy))) else NULL
   #anisotropies <- r_aniso(ansnull(anisotropy))
   symbolics <- ansnull(symbol)
   angle <- if (is.na(nanona(geom_angle)) == FALSE) clean(r_angle(nanona(geom_angle))) else NULL
@@ -57,8 +58,32 @@ readCIF <- function(filename, message=FALSE){
   torsion <- if (is.na(nanona(geom_torsion)) == FALSE) clean(r_torsion(nanona(geom_torsion))) else NULL
   #torsion <- r_torsion(ansnull(geom_torsion))
   #CIF=list(INTRO=intro,SYMM=symm,COOR=coordinate,ANISO=anisotropies)
-  CIF = list(HEADER=intro,SYMM=symm,REFL=reflections,COOR=coordinate,ANISO=anisotropies,SYMB=symbolics,ANGLE=angle,DIST=distance,HBOND=hbond,TORSION=torsion)
+  geome = list(ANGLE=angle,DIST=distance,HBOND=hbond,TORSION=torsion)
+  CIF = list(HEADER=intro,SYMM=symm,REFL=reflections,COOR=coordinate,ANISO=anisotropies,SYMB=symbolics,GEOM=geome)
   close(f)
+  if (message) {
+     if (!is.null(reflections)){
+     n <- length(reflections$F_squared_meas)
+     f <- as.numeric(reflections$F_squared_meas)
+	 msg <- c("\n")
+	 msg1 <- c(msg,sprintf("File %s read successfully.\n",filename))
+     msg2 <- sprintf("There are %d reflections in this file.\n",n)
+     msg3 <- c(msg,"Here is a summary of the observations:\n")
+     msg4 <- c("\n")
+	 out <- c(msg,msg1,msg2,msg3,msg4)
+	 cat(out)
+	 print(summary(f))
+	 } else {
+	 anum <- nrow(coordinate$VAL)
+	 msg <- c("\n")
+	 msg <- c(msg,sprintf("File %s read successfully.\n",filename))
+     msg1 <- sprintf("The file does not contain reflection datablock,
+	 please refer corresponding reflection file (fcf or hkl).\n")
+     msg2 <- sprintf("There are %d atoms in the molecule.\n",anum)
+	 out <- c(msg,msg1,msg2)
+     cat(out)
+	 }
+  }
   return(CIF)
 }
 
@@ -121,19 +146,20 @@ clean1 <- function(x){
   if (all(is.na(x)) == TRUE){
     out <- NULL
   } else
-  { out <- as.data.frame(x)
+  { out <- nc_type(as.data.frame(x))
   return(out)
   }
 }
 
 
 clean <- function(x){
-  co1 <- data.frame(gsub ("[()]","",as.matrix(x),perl=T))
+  co1 <- data.frame(gsub ("[()]","",as.matrix(x),perl=T),stringsAsFactors = FALSE)
   ref <- data.frame(gsub("(?<!\\))(?:\\w+|[^()])(?!\\))","",as.matrix(x),perl=T))
-  ref1 <- data.frame(gsub("[()]","",as.matrix(ref),perl=T))
+  ref1 <- data.frame(gsub("[()]","",as.matrix(ref),perl=T),stringsAsFactors = FALSE)
   ref1[ref1==""]<-NA
   ref2 <- clean1(ref1)
-  return(list(VAL=co1,STD=ref2))
+  col1 <- nc_type(co1)
+  return(list(VAL=col1,STD=ref2))
 }
 
 reap1 <- function(x){
@@ -155,76 +181,198 @@ reap <- function(pattern,word){
   return(list(VAL=v,STD=s2))
 }
 
+nc_type <- function(data){
+  count <- as.numeric(ncol(data))
+  if (isTRUE(count > 2)) {
+    data[] <- lapply(data, function(x) numas(x))
+    out <- data
+  } else if (count == 2){
+    l1_data <- list(data$VAL)
+    l_1 <- lapply(l1_data[[1]], function(x) numas(x))
+    l2_data <- list(data$KEY)
+    l2 <- c(gsub("\\[|\\]" ,"",l2_data[[1]]))
+    names(l_1) <- c(l2)
+    out <- l_1
+    return(out)
+  }
+}
 
-r_positions <- function (x){
+numas <- function(x){
+  data <- x
+  out <- (suppressWarnings(as.numeric(data)))
+  if (all(is.na(out))== FALSE) {
+    out1 <- out
+  } else {
+    out1 <- as.character(data)
+  }
+  return(out1)
+}
+
+r_reflcs <- function(x,y){
+  if (all(is.na(x))== FALSE) {
+      out <- x
+	  } else {
+	  if (all(is.na(y)) == FALSE) {
+	  out <- y
+	  } else {
+	   out <- NULL
+	  }
+	  return(out)
+	 }
+   }
+
+r_reflections1 <- function (x){
   data <- unlist(x)
-  nskip <- length((grep("_atom",data)))
+  cu <- grep("_shelx_hkl_file", data)
+  l <- length(cu)
+  if (l > 0) {
+     sc <- grep(";", data)
+     sc1 <- sc[sc > cu]
+     data <- data[sc1[1]:sc1[2]]
+     data <- data[data !=";"]
+     data1 <- data[!grepl('_', data)]
+     lst <- lapply(split(data1, cumsum(grepl("^V", data1))),
+                  function(x) read.table(text=x))
+     names(lst) <- NULL
+     res <- do.call(`cbind`, lst)
+     colnames(res) <- c("index_h","index_k","index_l","F_squared_meas","F_squared_sigma")
+     res <- res
+     } else {
+	 res <- NA
+	 return(res)
+	 }
+	}
+
+r_reflections2 <- function (x){
+  data <- unlist(x)
+  nskip <- length((grep("_refln",data)))
   lst <- lapply(split(data, cumsum(grepl("^V", data))),
                 function(x) read.table(text=x,skip=nskip))
   names(lst) <- NULL
   res <- do.call(`cbind`, lst)
+  l_l <- c(grep("_refln",data,value=TRUE))
+  l_l <- c(gsub(" ","",l_l))
+  colnames(res) <- c(gsub("_refln_","",l_l))
+  return(res)
+}
+
+r_spositions <- function (x){
+  data <- unlist(x)
   l_l <- c(grep("_atom",data,value=TRUE))
+  data1 <- data[length(l_l)+1:length(data)]
+  data1 <- data1[!is.na(data1)]
+  cu <- grep("^\\_",data1)
+  if ((length(cu)) >0){
+      data2 <- data1[1:cu[1]-1]
+    } else {
+      data2 <- data1
+    }
+  #nskip <- length((grep("_atom",data)))
+  lst <- lapply(split(data2, cumsum(grepl("^V", data2))),
+                function(x) read.table(text=x))
+  names(lst) <- NULL
+  res <- do.call(`cbind`, lst)
   colnames(res) <- c(gsub("_atom_site_","",l_l))
   return(res)
 }
 
-r_aniso <- function(x){
+
+r_saniso <- function(x){
   data <- unlist(x)
-  nskip <- length((grep("_atom",data)))
-  lst <- lapply(split(data, cumsum(grepl("^V", data))),
-                function(x) read.table(text=x,skip=nskip))
+  l_l <- c(grep("_atom",data,value=TRUE))
+  data1 <- data[length(l_l)+1:length(data)]
+  data1 <- data1[!is.na(data1)]
+  cu <- grep("^\\_",data1)
+  if ((length(cu)) >0){
+      data2 <- data1[1:cu[1]-1]
+    } else {
+      data2 <- data1
+    }
+  #nskip <- length((grep("_atom",data)))
+  lst <- lapply(split(data2, cumsum(grepl("^V", data2))),
+                function(x) read.table(text=x))
   names(lst) <- NULL
   res <- do.call(`cbind`, lst)
-  l_l <- c(grep("_atom",data,value=TRUE))
   colnames(res) <- c(gsub("_atom_site_aniso_","",l_l))
   return(res)
 }
 
-
 r_angle <- function(x){
   data <- unlist(x)
-  nskip <- length((grep("_geom_angle",data)))
-  lst <- lapply(split(data, cumsum(grepl("^V", data))),
-                function(x) read.table(text=x,skip=nskip))
+  l_l <- c(grep("_geom_angle",data,value=TRUE))
+  data1 <- data[length(l_l)+1:length(data)]
+  data1 <- data1[!is.na(data1)]
+  cu <- grep("^\\_",data1)
+  if ((length(cu)) >0){
+      data2 <- data1[1:cu[1]-1]
+    } else {
+      data2 <- data1
+    }
+  #nskip <- length((grep("_geom_angle",data)))
+  lst <- lapply(split(data2, cumsum(grepl("^V", data2))),
+                function(x) read.table(text=x))
   names(lst) <- NULL
   res <- do.call(`cbind`, lst)
-  l_l <- c(grep("_geom_angle",data,value=TRUE))
   colnames(res) <- c(gsub("_geom_angle_","",l_l))
   return(res)
 }
 
 r_dist <- function(x){
   data <- unlist(x)
-  nskip <- length((grep("_geom_bond",data)))
-  lst <- lapply(split(data, cumsum(grepl("^V", data))),
-                function(x) read.table(text=x,skip=nskip))
+  l_l <- c(grep("_geom_bond",data,value=TRUE))
+  data1 <- data[length(l_l)+1:length(data)]
+  data1 <- data1[!is.na(data1)]
+  cu <- grep("^\\_",data1)
+  if ((length(cu)) >0){
+      data2 <- data1[1:cu[1]-1]
+    } else {
+      data2 <- data1
+    }
+  #nskip <- length((grep("_geom_bond",data)))
+  lst <- lapply(split(data2, cumsum(grepl("^V", data2))),
+                function(x) read.table(text=x))
   names(lst) <- NULL
   res <- do.call(`cbind`, lst)
-  l_l <- c(grep("_geom_bond",data,value=TRUE))
   colnames(res) <- c(gsub("_geom_bond_","",l_l))
   return(res)
 }
 
 r_hbond <- function(x){
   data <- unlist(x)
-  nskip <- length((grep("_geom_hbond",data)))
-  lst <- lapply(split(data, cumsum(grepl("^V", data))),
-                function(x) read.table(text=x,skip=nskip))
+  l_l <- c(grep("_geom_hbond",data,value=TRUE))
+  data1 <- data[length(l_l)+1:length(data)]
+  data1 <- data1[!is.na(data1)]
+  cu <- grep("^\\_",data1)
+  if ((length(cu)) >0){
+      data2 <- data1[1:cu[1]-1]
+    } else {
+      data2 <- data1
+    }
+  #nskip <- length((grep("_geom_hbond",data)))
+  lst <- lapply(split(data2, cumsum(grepl("^V", data2))),
+                function(x) read.table(text=x))
   names(lst) <- NULL
   res <- do.call(`cbind`, lst)
-  l_l <- c(grep("_geom_hbond",data,value=TRUE))
   colnames(res) <- c(gsub("_geom_hbond_","",l_l))
   return(res)
 }
 
 r_torsion <- function(x){
   data <- unlist(x)
-  nskip <- length((grep("_geom_torsion",data)))
-  lst <- lapply(split(data, cumsum(grepl("^V", data))),
-                function(x) read.table(text=x,skip=nskip))
+  l_l <- c(grep("_geom_torsion",data,value=TRUE))
+  data1 <- data[length(l_l)+1:length(data)]
+  data1 <- data1[!is.na(data1)]
+  cu <- grep("^\\_",data1)
+  if ((length(cu)) >0){
+      data2 <- data1[1:cu[1]-1]
+    } else {
+      data2 <- data1
+    }
+  #nskip <- length((grep("_geom_torsion",data)))
+  lst <- lapply(split(data2, cumsum(grepl("^V", data2))),
+                function(x) read.table(text=x))
   names(lst) <- NULL
   res <- do.call(`cbind`, lst)
-  l_l <- c(grep("_geom_torsion",data,value=TRUE))
   colnames(res) <- c(gsub("_geom_torsion_","",l_l))
   return(res)
 }
@@ -251,6 +399,18 @@ r_summ <- function(x){
   #prop <- list(v,den)
   summ_c <- list(FORMULA=formula,CELL=cell,VOL=v,DEN=den,CrysSys=c_sy,SGN=sg_n,HALL=sg_hall,HM=sg_HM)
   return(summ_c)
+}
+
+r_msg <- function(x){
+  data <- unlist(x)
+  a <- reap("_cell_length_a",data)
+  b <- reap("_cell_length_b",data)
+  c <- reap("_cell_length_c",data)
+  al <- reap("_cell_angle_alpha",data)
+  be <- reap("_cell_angle_beta",data)
+  ga <- reap("_cell_angle_gamma",data)
+  cell <- c(a,b,c,al,be,ga)
+  return(cell)
 }
 
 

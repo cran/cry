@@ -1,5 +1,6 @@
 ## ----setup--------------------------------------------------------------------
 library(cry)
+library(ggplot2)
 
 ## ----echo=TRUE----------------------------------------------------------------
 datadir <- system.file("extdata",package="cry")
@@ -8,35 +9,30 @@ print(all_files)
 
 ## ----echo=TRUE----------------------------------------------------------------
 filename <- file.path(datadir,"shelxc.log")
-obj_shelxc <- readSHELXlog(filename)
+obj_shelxc <- read_SHELX_log(filename)
 class(obj_shelxc)
 names(obj_shelxc)
 
 ## -----------------------------------------------------------------------------
-library(ggplot2)
-ggplot(obj_shelxc, aes(1/(Res)^2, d_sig)) +
- geom_point() + geom_line() + theme_bw() +
- xlab(expression(h^2 * (ring(A)^-2))) + 
-  ylab(expression(Delta*F/sig(Delta*F)))
-
+plot_SHELX(obj_shelxc, var = obj_shelxc$Chi_sq, type = "shelxc",
+           title_chart = "Chis ^2") +
+  theme_cry()
+    
 
 ## ----echo=TRUE----------------------------------------------------------------
 filename <- file.path(datadir,"shelxd.log")
-obj_shelxd <- readSHELXlog(filename)
+obj_shelxd <- read_SHELX_log(filename)
 class(obj_shelxd)
 names(obj_shelxd)
 
 ## ---- fig_width = 16, fig_height= 14------------------------------------------
-library(ggplot2)
-
-ggplot(obj_shelxd, aes(CCall, CCweak)) +
-  geom_point() + theme_bw() +
-  xlab('CCall') + ylab('CCweak') 
+plot_SHELX(filename = obj_shelxd, type = "shelxd") +
+  theme_cry()
 
 ## ----echo=TRUE----------------------------------------------------------------
 ## read the two hands log files separately
 filename_i <- file.path(datadir,"shelxe_i.log")
-obj_shelxe_i <- readSHELXlog(filename_i)
+obj_shelxe_i <- read_SHELX_log(filename_i)
 class(obj_shelxe_i)
 names(obj_shelxe_i)
 cycle_i <- obj_shelxe_i$CYCLE
@@ -53,7 +49,7 @@ class(Site2_i)
 names(Site2_i)
 
 filename_o <- file.path(datadir,"shelxe_o.log")
-obj_shelxe_o <- readSHELXlog(filename_o)
+obj_shelxe_o <- read_SHELX_log(filename_o)
 class(obj_shelxe_o)
 names(obj_shelxe_o)
 cycle_o <- obj_shelxe_o$CYCLE
@@ -68,4 +64,9 @@ names(Site1_i)
 Site2_o <- obj_shelxe_o$Site2
 class(Site2_i)
 names(Site2_i)
+
+## -----------------------------------------------------------------------------
+plot_SHELX(filename = obj_shelxe_i, filename_e = obj_shelxe_o,
+           type = "shelxe") +
+  theme_cry()
 

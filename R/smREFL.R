@@ -3,43 +3,43 @@
 #
 # Functions connected to reflections data.
 
-#' Reads and output a CIF file for powder diffraction
+#' Reads and output an CIF file
 #'
-#' @param filename A character string. The path to a valid CIF file.
+#' @param filename A character string. The path to a valid small molecule
+#'     reflection file. Typically a hkl or an fcf file.
 #' @param message A logical variable. If TRUE (default) the function prints
 #'    a message highlighting what is included in the cif file.
-#' @return A named list. Each name correspond to a valid field in the powder
-#'    diffraction Rietveld processed CIF.
+#' @return A named list. Each name correspond to a valid field in the fcf or hkl file.
 #'
 #' @examples
 #' datadir <- system.file("extdata",package="cry")
-#' filename <- file.path(datadir,"e-65-00i60-Isup2.rtv")
-#' lCIF <- readpd_rtv(filename)
+#' filename <- file.path(datadir,"1dei-sf.cif")
+#' lCIF <- readsm_REFL(filename)
 #' print(names(lCIF))
 #' print(lCIF$INTRO$CELL)
-#' print(lCIF$INTRO$HALL)
-#' print(lCIF$INTRO$HM)
+#' print(lCIF$SYMM)
 #' print(lCIF$REFL)
-#'
 #' @export
-readpd_rtv <- function(filename,message=FALSE){
+readsm_REFL <- function(filename, message=FALSE){
   f <- file(filename)
   lcif <- readLines(f,warn=FALSE)
-  #c_lcif <- lcif[!grepl('^#|^.*#', lcif)]
   l_list <- grep("loop_",lcif)
   l_list1 <- l_find(l_list, length(lcif))
+  #l_list1 <- append(l_list,(length(lcif)-1))
   mat<-zoo::rollapply(l_list1, 2,stack)
   ch <- apply(mat, 1, function(x) lcif[(x[1]+1):(x[2]-1)])
-  diffraction <- lapply(ch, ucheck, pattern="_pd_proc_point_id")
+  #crystal_summary <- lapply(ch, ucheck, pattern="_audit.revision_id ")
+  symmetry <- lapply(ch, ucheck, pattern="_xyz")
   reflection <- lapply(ch, ucheck, pattern="_refln_index_h")
 
+
   intro <- r_summ(lcif)
-  diffractions <- if (is.na(nanona(diffraction)) == FALSE) clean(r_diffractions(nanona(diffraction))) else NULL
-  reflections <- if (is.na(nanona(reflection)) == FALSE) clean(r_peakreflns(nanona(reflection))) else NULL
-  CIF = list(HEADER=intro,DIFF=diffractions,REFL_PEAK=reflections)
+  symm <- if (is.na(nanona(symmetry)) == FALSE) r_symm(nanona(symmetry)) else NULL
+  reflections <- if (is.na(nanona(reflection)) == FALSE) clean(r_reflections(nanona(reflection))) else NULL
+  CIF = list(HEADER=intro,SYMM=symm,REFL=reflections)
   close(f)
-  nrefs <- length(reflections$VAL$F_meas_au)
-  fmeas <- as.numeric(reflections$VAL$F_meas_au)
+  nrefs <- length(reflections$VAL$F_squared_meas)
+  fmeas <- as.numeric(reflections$VAL$F_squared_meas)
   msg <- c("\n")
   if (message) {
     msg <- c(msg,sprintf("File %s read successfully.\n",filename))
@@ -50,7 +50,6 @@ readpd_rtv <- function(filename,message=FALSE){
     cat(msg)
     print(summary(fmeas))
   }
-
   return(CIF)
 }
 
@@ -160,7 +159,7 @@ reap <- function(pattern,word){
 
 nc_type <- function(data){
   count <- as.numeric(ncol(data))
-  if (isTRUE(count > 2)) {
+  if (isTRUE(count > 2)) { #something wrong in lower version of R
     data[] <- lapply(data, function(x) numas(x))
     out <- data
   } else if (count == 2){
@@ -185,42 +184,22 @@ numas <- function(x){
   return(out1)
 }
 
-r_diffractions <- function (x){
+r_symm <- function (x){
   data <- unlist(x)
-  data <- data[!grepl("_number_of_points", data)]
+  data <- data[!grepl("_", data)]
   data <- data[data !=" "]
-  l_l <- c(grep("_pd",data,value=TRUE))
-  m <- length(l_l)
-  n <- length(data)
-  data1 <- data[m+1:n]
-  data1 <- nanona(data1)
-  data2 <- scan(text=data1, what='character', quiet=TRUE)
-  o <- length(data2)
-  data3 <- list(data2)
-  list_all <- split(data3[[1]], rep(1:(length(data2)/length(l_l)), each = m))
-  res <- do.call(rbind, list_all)
-  res <- as.data.frame(res)
-  l_l <- c(gsub(" ","",l_l))
-  colnames(res) <- c(gsub("_pd_","",l_l))
+  res <- data[data !=""]
   return(res)
 }
 
-
-r_peakreflns <- function (x){
+r_reflections <- function (x){
   data <- unlist(x)
-  data1 <- data[!grepl('^#|^.*#', data)]
-  data1 <- data1[data1 !=" "]
-  l_l <- c(grep("_refln_",data1,value=TRUE))
-  m <- length(l_l)
-  n <- length(data1)
-  data2 <- data1[m+1:n]
-  data2 <- nanona(data2)
-  data3 <- scan(text=data2, what='character', quiet=TRUE)
-  o <- length(data3)
-  data4 <- list(data3)
-  list_all <- split(data4[[1]], rep(1:(length(data3)/length(l_l)), each = m))
-  res <- do.call(rbind, list_all)
-  res <- as.data.frame(res)
+  nskip <- length((grep("_refln",data)))
+  lst <- lapply(split(data, cumsum(grepl("^V", data))),
+                function(x) read.table(text=x,skip=nskip))
+  names(lst) <- NULL
+  res <- do.call(`cbind`, lst)
+  l_l <- c(grep("_refln",data,value=TRUE))
   l_l <- c(gsub(" ","",l_l))
   colnames(res) <- c(gsub("_refln_","",l_l))
   return(res)
@@ -228,21 +207,20 @@ r_peakreflns <- function (x){
 
 r_summ <- function(x){
   data <- unlist(x)
-  id <- check("_pd_block_id",data)
-  pdm <- check("_pd_calc_method",data)
-  mtmi <- reap("_meas_2theta_range_min",data)
-  mtma <- reap("_meas_2theta_range_max",data)
-  mti <- reap("_meas_2theta_range_inc",data)
-  ptmi <- reap("_proc_2theta_range_min",data)
-  ptma <- reap("_proc_2theta_range_max",data)
-  pti <- reap("_proc_2theta_range_inc",data)
-  rp <- check("_diffrn_radiation_probe ",data)
-  wl <-reap("_diffrn_radiation_wavelength ",data)
-  rf <- reap("_proc_ls_prof_R_factor",data)
-  wr <- reap("_proc_ls_prof_wR_factor",data)
-  e_wr <- reap("_proc_ls_prof_wR_expected",data)
-  Theta_r <- list(Meas_min=mtmi,Meas_max=mtma,Meas_inc=mti,Proc_min=ptmi,Proc_max=ptma,Proc_inc=pti)
-  R_fit <- list(Rp=rf,Rwp=wr,Rexp=e_wr)
-  summ_c <- list(ENTRY=id,THETA_RANGE=Theta_r,PROBE_TYPE=rp,WAVELENGTH=wl,R_PRO_FIT=R_fit)
+  id <- check1("_shelx_title",data)
+  a <- reap("_cell_length_a",data)
+  b <- reap("_cell_length_b",data)
+  c <- reap("_cell_length_c",data)
+  al <- reap("_cell_angle_alpha",data)
+  be <- reap("_cell_angle_beta",data)
+  ga <- reap("_cell_angle_gamma",data)
+  sg_n <- as.numeric(check("_symmetry_Int_Tables_number",data))
+  sg_hall<- check1("_symmetry_space_group_name_Hall",data)
+  sg_HM <- check1("_symmetry_space_group_name_H-M",data)
+  co <- check("_shelx_refln_list_code",data)
+  F000 <- check("_exptl_crystal_F_000",data)
+  hr <- check("_reflns_d_resolution_high",data)
+  cell <- list(A=a,B=b,C=c,ALPHA=al,BETA=be,GAMMA=ga)
+  summ_c <- list(TITLE=id,CELL=cell,SGN=sg_n,HALL=sg_hall,HM=sg_HM,SHELX_CODE=co,F_000=F000,HIGH_RES=hr)
   return(summ_c)
 }

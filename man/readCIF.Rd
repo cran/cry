@@ -2,7 +2,7 @@
 % Please edit documentation in R/cif.R
 \name{readCIF}
 \alias{readCIF}
-\title{Reads and output an CIF file}
+\title{Reads and output a CIF file}
 \usage{
 readCIF(filename, message = FALSE)
 }
@@ -16,7 +16,7 @@ a message highlighting what is included in the cif file.}
 A named list. Each name correspond to a valid field in the cif.
 }
 \description{
-Reads and output an CIF file
+Reads and output a CIF file
 }
 \examples{
 datadir <- system.file("extdata",package="cry")

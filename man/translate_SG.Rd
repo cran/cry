@@ -7,10 +7,11 @@
 translate_SG(value, SG_in = "number", SG_out = "xHM", set = 1)
 }
 \arguments{
-\item{value}{A string or an integer number corresponding to the space group being
-investigated.}
+\item{value}{A string or an integer number corresponding to the space group
+being investigated.}
 
-\item{SG_in}{A string representing the space group format for the input. Possible values are:
+\item{SG_in}{A string representing the space group format for the input.
+Possible values are:
 \itemize{
   \item{1) "number"}
   \item{2) "ccp4"}
@@ -19,7 +20,8 @@ investigated.}
   \item{5) "old"}
 }}
 
-\item{SG_out}{A string representing the space group format for the output. Possible values are:
+\item{SG_out}{A string representing the space group format for the output.
+Possible values are:
 \itemize{
   \item{1) "number"}
   \item{2) "ccp4"}
@@ -32,10 +34,11 @@ investigated.}
 It is used if for a same symbol there are more than one choice.}
 }
 \value{
-list_SG A named list with two fields. The first field, "msg", is a character string
-  representing the space group format needed as output. Possible values are the same as
-  those for SG_in. The second field, "ans", is TRUE only if a valid symbol for "msg" is
-  found.
+list_SG A named list with two fields. The first field, "msg", is a
+                character string representing the space group format needed
+                as output. Possible values are the same as those for SG_in.
+                The second field, "ans", is TRUE only if a valid symbol for
+                "msg" is found.
 }
 \description{
 Function to find out space group symbol given number and vice-versa.
@@ -52,8 +55,8 @@ Possible formats are:
   \item{3) Extended Hermann-Mauguin symbol (e.g. 'P 1 1 21')}
 }
 If more than one setting is implied in an ambiguous way in the input value,
-then the first setting will be selected by default for the output value, unless
-argument "set" is set to another value.
+then the first setting will be selected by default for the output value,
+unless argument "set" is set to another value.
 }
 \examples{
 # Space Group P1 corresponds to number 1

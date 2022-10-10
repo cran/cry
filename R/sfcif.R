@@ -38,6 +38,18 @@ readSF_CIF <- function(filename, message=FALSE){
   reflections <- if (is.na(nanona(reflection)) == FALSE) clean(r_reflections(nanona(reflection))) else NULL
   CIF = list(HEADER=intro,SYMM=symm,REFL=reflections)
   close(f)
+  nrefs <- length(reflections$VAL$F_meas_au)
+  fmeas <- as.numeric(reflections$VAL$F_meas_au)
+  msg <- c("\n")
+  if (message) {
+    msg <- c(msg,sprintf("File %s read successfully.\n",filename))
+    msg2 <- sprintf("There are %d reflections in this file.\n",nrefs)
+    msg <- c(msg,msg2)
+    msg <- c(msg,"Here is a summary of the observations:\n")
+    msg <- c(msg,"\n")
+    cat(msg)
+    print(summary(fmeas))
+  }
   return(CIF)
 }
 
@@ -110,19 +122,20 @@ clean1 <- function(x){
   if (all(is.na(x)) == TRUE){
     out <- NULL
   } else
-  { out <- as.data.frame(x)
+  { out <- nc_type(as.data.frame(x))
   return(out)
   }
 }
 
 
 clean <- function(x){
-  co1 <- data.frame(gsub ("[()]","",as.matrix(x),perl=T))
+  co1 <- data.frame(gsub ("[()]","",as.matrix(x),perl=T),stringsAsFactors = FALSE)
   ref <- data.frame(gsub("(?<!\\))(?:\\w+|[^()])(?!\\))","",as.matrix(x),perl=T))
-  ref1 <- data.frame(gsub("[()]","",as.matrix(ref),perl=T))
+  ref1 <- data.frame(gsub("[()]","",as.matrix(ref),perl=T),stringsAsFactors = FALSE)
   ref1[ref1==""]<-NA
   ref2 <- clean1(ref1)
-  return(list(VAL=co1,STD=ref2))
+  col1 <- nc_type(co1)
+  return(list(VAL=col1,STD=ref2))
 }
 
 reap1 <- function(x){
@@ -143,6 +156,34 @@ reap <- function(pattern,word){
   s2 <- reap1(s1)
   return(list(VAL=v,STD=s2))
 }
+
+nc_type <- function(data){
+  count <- as.numeric(ncol(data))
+  if (isTRUE(count > 2)) { #something wrong in lower version of R
+    data[] <- lapply(data, function(x) numas(x))
+    out <- data
+  } else if (count == 2){
+    l1_data <- list(data$VAL)
+    l_1 <- lapply(l1_data[[1]], function(x) numas(x))
+    l2_data <- list(data$KEY)
+    l2 <- c(gsub("\\[|\\]" ,"",l2_data[[1]]))
+    names(l_1) <- c(l2)
+    out <- l_1
+    return(out)
+  }
+}
+
+numas <- function(x){
+  data <- x
+  out <- (suppressWarnings(as.numeric(data)))
+  if (all(is.na(out))== FALSE) {
+    out1 <- out
+  } else {
+    out1 <- as.character(data)
+  }
+  return(out1)
+}
+
 r_symm <- function (x){
   data <- unlist(x)
   nskip <- length((grep("_symmetry",data)))

@@ -1,8 +1,8 @@
 Package: cry
 Type: Package
 Title: Statistics for Structural Crystallography
-Version: 0.4.1
-Date: 2021-05-01
+Version: 0.5.1
+Date: 2022-10-05
 Authors@R: c(
 	person("James","Foadi",email="james_foadi@yahoo.co.uk",role=c("cre","aut")),
 	person("David","Waterman",email="david.waterman@stfc.ac.uk",role="aut"),
@@ -15,18 +15,19 @@ Description: Reading and writing of files in the most commonly used formats of
   (2011) <doi:10.1107/S0108767311084303>.
 License: GPL-2
 LazyLoad: yes
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.1
 VignetteBuilder: knitr
 Encoding: UTF-8
 Depends: R (>= 3.6.0)
-Imports: methods, zoo
-Suggests: knitr, rmarkdown, markdown, ggplot2
+Imports: methods, zoo, ggplot2
+Suggests: knitr, rmarkdown, markdown
+URL: https://jfoadi.github.io/cry/
 NeedsCompilation: no
-Packaged: 2021-05-02 09:26:55 UTC; james
+Packaged: 2022-10-05 14:03:56 UTC; james
 Author: James Foadi [cre, aut],
   David Waterman [aut],
   Rita Giordano [aut],
   Kutumbarao Nidamarthi [aut]
 Maintainer: James Foadi <james_foadi@yahoo.co.uk>
 Repository: CRAN
-Date/Publication: 2021-05-03 07:30:02 UTC
+Date/Publication: 2022-10-10 08:00:05 UTC
