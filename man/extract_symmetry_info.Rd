@@ -45,7 +45,7 @@ list with human-readable character strings which detail key symmetry information
 }
 \examples{
 # This is the full information for space group number 19, P 21 21 21
-SG <- translate_SG(19)
+SG <- translate_SG(19)$msg
 ltmp <- extract_symmetry_info(SG)
 ltmp
 

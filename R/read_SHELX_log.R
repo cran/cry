@@ -32,7 +32,7 @@ read_SHELX_log <- function(filename)
 
 
   if (header[2] != "+") {
-    msg <- "The file is no the correct SHELX format"
+    msg <- "The file is not in the correct SHELX format"
     cat(msg)
     return(NULL)
   }

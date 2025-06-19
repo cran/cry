@@ -10,6 +10,8 @@
 #'    a message highlighting what is included in the cif file.
 #' @return A named list. Each name correspond to a valid field in the cif.
 #'
+#' @importFrom utils tail
+#'
 #' @examples
 #' datadir <- system.file("extdata",package="cry")
 #' filename <- file.path(datadir,"AMS_DATA.cif")
@@ -24,6 +26,10 @@
 readCIF <- function(filename, message=FALSE){
   f <- file(filename)
   lcif <- readLines(f,warn=FALSE)
+  ## Patch contributed by @saitoutoshihide of GitHub in 2024
+  if (tail(lcif, 1) != "") lcif <- c(lcif, "")
+  lcif <- gsub("^[ \t]*" ,"", lcif)
+  ## end of patch by @saitoutoshihide
   l_list <- grep("loop_",lcif)
   l_list1 <- append(l_list,length(lcif))
   mat<-zoo::rollapply(l_list1, 2,stack)

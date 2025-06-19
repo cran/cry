@@ -15,10 +15,10 @@
 \item{...}{Additional arguments passed to the print methods}
 }
 \value{
-No values. A message is displayed which includes
+Nothing. A message is displayed which includes
         information on the unit cell.
 
-No values. A message is displayed which includes
+Nothing. A message is displayed which includes
         information on the reflections contained in this object
         and the crystal structure they relate to.
 }

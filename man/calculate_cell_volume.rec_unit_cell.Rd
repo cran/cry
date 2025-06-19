@@ -2,7 +2,7 @@
 % Please edit documentation in R/cell_S3.R
 \name{calculate_cell_volume.rec_unit_cell}
 \alias{calculate_cell_volume.rec_unit_cell}
-\title{Volume of a reciprocal unit cell (in angstroms^(-3))}
+\title{Volume of a reciprocal unit cell (in \eqn{angstroms^(-3)})}
 \usage{
 \method{calculate_cell_volume}{rec_unit_cell}(x, ...)
 }

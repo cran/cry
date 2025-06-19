@@ -2,7 +2,7 @@
 % Please edit documentation in R/cell_S3.R
 \name{calculate_cell_volume.unit_cell}
 \alias{calculate_cell_volume.unit_cell}
-\title{Volume of a unit cell (in angstroms^3)}
+\title{Volume of a unit cell (in cubic angstroms)}
 \usage{
 \method{calculate_cell_volume}{unit_cell}(x, ...)
 }

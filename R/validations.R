@@ -106,7 +106,7 @@ check_validity <- function(x,y=NULL,message=FALSE) {
     ans <- check_bravais_validity(bt)
     if (!ans) {
       msg <- paste("Input does not include a valid object",
-                   "of class 'bravais'.\n")
+                   "of class bravais.\n")
       if (message) cat(msg)
       ans <- FALSE
 
@@ -115,7 +115,7 @@ check_validity <- function(x,y=NULL,message=FALSE) {
     ans <- check_unit_cell_validity(uc)
     if (!ans) {
       msg <- paste("Input does not include a valid object",
-                   "of class 'unit_cell'.\n")
+                   "of class unit_cell.\n")
       if (message) cat(msg)
       ans <- FALSE
 
@@ -146,8 +146,8 @@ check_validity <- function(x,y=NULL,message=FALSE) {
       if (db > 0.000001) ntmp <- ntmp-1
       if (dc > 0.000001) ntmp <- ntmp-1
       if (ntmp < 2) {
-        msg <- paste("Angles of 'unit_cell' object are not",
-                     "compatible with 'bravais'","object.\n")
+        msg <- paste("Angles of unit_cell object are not",
+                     "compatible with bravais","object.\n")
         if (message) cat(msg)
         ans <- FALSE
 
@@ -165,8 +165,8 @@ check_validity <- function(x,y=NULL,message=FALSE) {
       if (db > 0.000001) ntmp <- ntmp-1
       if (dc > 0.000001) ntmp <- ntmp-1
       if (ntmp < 3) {
-        msg <- paste("Angles of 'unit_cell' object are not",
-                     "compatible with 'bravais'","object.\n")
+        msg <- paste("Angles of unit_cell object are not",
+                     "compatible with bravais","object.\n")
         if (message) cat(msg)
         ans <- FALSE
 
@@ -184,8 +184,8 @@ check_validity <- function(x,y=NULL,message=FALSE) {
       if (db > 0.000001) ntmp <- ntmp-1
       if (dc > 0.000001) ntmp <- ntmp-1
       if (ntmp < 3) {
-        msg <- paste("Angles of 'unit_cell' object are not",
-                     "compatible with 'bravais'","object.\n")
+        msg <- paste("Angles of unit_cell object are not",
+                     "compatible with bravais","object.\n")
         if (message) cat(msg)
         ans <- FALSE
 
@@ -193,8 +193,8 @@ check_validity <- function(x,y=NULL,message=FALSE) {
       }
       diffab <- abs(a-b)
       if (diffab > 0.000001) {
-        msg <- paste("Sides of 'unit_cell' object are not",
-                     "compatible with 'bravais'","object.\n")
+        msg <- paste("Sides of unit_cell object are not",
+                     "compatible with bravais","object.\n")
         if (message) cat(msg)
         ans <- FALSE
 
@@ -212,8 +212,8 @@ check_validity <- function(x,y=NULL,message=FALSE) {
       if (db > 0.000001) ntmp <- ntmp-1
       if (dc > 0.000001) ntmp <- ntmp-1
       if (ntmp < 3) {
-        msg <- paste("Angles of 'unit_cell' object are not",
-                     "compatible with 'bravais'","object.\n")
+        msg <- paste("Angles of unit_cell object are not",
+                     "compatible with bravais","object.\n")
         if (message) cat(msg)
         ans <- FALSE
 
@@ -222,8 +222,8 @@ check_validity <- function(x,y=NULL,message=FALSE) {
       diffab <- abs(a-b)
       diffbc <- abs(b-c)
       if (diffab > 0.000001 | diffbc > 0.000001) {
-        msg <- paste("Angles of 'unit_cell' object are",
-                     "not compatible with 'bravais'",
+        msg <- paste("Angles of unit_cell object are",
+                     "not compatible with bravais",
                      "object.\n")
         if (message) cat(msg)
         ans <- FALSE
@@ -253,8 +253,8 @@ check_validity <- function(x,y=NULL,message=FALSE) {
           da90 < 0.000001 | db90 < 0.000001 | dc90 < 0.000001)
         ansRo <- FALSE
       if (!ansHe & !ansRo) {
-        msg <- paste("Angles of 'unit_cell' object are",
-                     "not compatible with 'bravais'",
+        msg <- paste("Angles of unit_cell object are",
+                     "not compatible with bravais",
                      "object.\n")
         if (message) cat(msg)
         ans <- FALSE
@@ -273,8 +273,8 @@ check_validity <- function(x,y=NULL,message=FALSE) {
       if (diffab > 0.000001 | diffbc > 0.000001)
         ansRo <- FALSE
       if (!ansHe & !ansRo) {
-        msg <- paste("Sides of 'unit_cell' object are",
-                     "not compatible with 'bravais'",
+        msg <- paste("Sides of unit_cell object are",
+                     "not compatible with bravais",
                      "object.\n")
         if (message) cat(msg)
         ans <- FALSE
@@ -304,12 +304,12 @@ check_validity <- function(x,y=NULL,message=FALSE) {
     ans2 <- check_unit_cell_validity(uc)
     if (!ans1) {
       msg <- paste("Input does not include  a valid object",
-                   "of class 'cryst_symm'.\n")
+                   "of class cryst_symm.\n")
       if (message) cat(msg)
     }
     if (!ans2) {
       msg <- paste("Input does not include a valid object",
-                   "of class 'unit_cell'.\n")
+                   "of class unit_cell.\n")
       if (message) cat(msg)
     }
     if (!ans1 | !ans2) {
@@ -389,7 +389,7 @@ check_angle_validity <- function(x,message=FALSE) {
   ltmp <- attributes(x)
   ans <- "rad_flag" %in% names(ltmp)
   if (!ans) {
-    msg <- "This object has no 'rad_flag' attribute.\n"
+    msg <- "This object has no rad_flag attribute.\n"
     if (message) cat(msg)
 
     return(ans)
@@ -441,7 +441,7 @@ check_bravais_validity <- function(x,message=FALSE) {
   ans <- is(x,"bravais")
   if (!ans) {
     msg <- paste("This is not a valid object of class",
-                 "'bravais'.\n")
+                 "bravais.\n")
     if (message) cat(msg)
 
     return(ans)
@@ -450,7 +450,7 @@ check_bravais_validity <- function(x,message=FALSE) {
   ltmp <- names(x)
   ans <- "bt" %in% ltmp
   if (!ans) {
-    msg <- "This object has no 'bt' attribute.\n"
+    msg <- "This object has no bt attribute.\n"
     if (message) cat(msg)
 
     return(ans)
@@ -463,7 +463,7 @@ check_bravais_validity <- function(x,message=FALSE) {
       x$bt != "hP" & x$bt != "hR" & x$bt != "cP" &
       x$bt != "cF" & x$bt != "cI") {
     ans <- FALSE
-    msg <- paste("The Bravais type in 'bt'",
+    msg <- paste("The Bravais type in bt",
                  "cannot be recognised ")
     if (message) cat(msg)
 
@@ -472,7 +472,7 @@ check_bravais_validity <- function(x,message=FALSE) {
   # Check on crystal family
   ans <- "cr_fam" %in% ltmp
   if (!ans) {
-    msg <- "This object has no 'cr_fam' attribute.\n"
+    msg <- "This object has no cr_fam attribute.\n"
     if (message) cat(msg)
 
     return(ans)
@@ -483,7 +483,7 @@ check_bravais_validity <- function(x,message=FALSE) {
       x$cr_fam != "cubic" & x$cr_fam != "cubic" &
       x$cr_fam != "hexagonal") {
     ans <- FALSE
-    msg <- paste("The crystal family in 'cr_fam'",
+    msg <- paste("The crystal family in cr_fam",
                  "cannot be recognised.\n")
 
     return(ans)
@@ -491,7 +491,7 @@ check_bravais_validity <- function(x,message=FALSE) {
   # Check on crystal system
   ans <- "cr_sys" %in% ltmp
   if (!ans) {
-    msg <- "This object has no 'cr_sys' attribute.\n"
+    msg <- "This object has no cr_sys attribute.\n"
     if (message) cat(msg)
 
     return(ans)
@@ -502,7 +502,7 @@ check_bravais_validity <- function(x,message=FALSE) {
       x$cr_sys != "cubic" & x$cr_sys != "trigonal" &
       x$cr_sys != "hexagonal") {
     ans <- FALSE
-    msg <- paste("The crystal system in 'cr_fam'",
+    msg <- paste("The crystal system in cr_fam",
                  "cannot be recognised.\n")
 
     return(ans)
@@ -510,7 +510,7 @@ check_bravais_validity <- function(x,message=FALSE) {
   # Check on lattice system
   ans <- "lt_sys" %in% ltmp
   if (!ans) {
-    msg <- "This object has no 'lt_sys' attribute.\n"
+    msg <- "This object has no lt_sys attribute.\n"
     if (message) cat(msg)
 
     return(ans)
@@ -521,7 +521,7 @@ check_bravais_validity <- function(x,message=FALSE) {
       x$lt_sys != "cubic" & x$lt_sys != "hexagonal" &
       x$lt_sys != "rhombohedral or hexagonal (centred)") {
     ans <- FALSE
-    msg <- paste("The lattice system in 'cr_fam'",
+    msg <- paste("The lattice system in cr_fam",
                  "cannot be recognised.\n")
 
     return(ans)
@@ -543,7 +543,7 @@ check_bravais_validity <- function(x,message=FALSE) {
        x$cr_fam != "monoclinic") {
     msg <- paste("Bravais type and crystal family are",
                  "incompatile in this object of",
-                 "class 'bravais'.\n")
+                 "class bravais.\n")
     ans <- FALSE
     if (message) cat(msg)
 
@@ -604,7 +604,7 @@ check_bravais_validity <- function(x,message=FALSE) {
        x$cr_sys != "monoclinic") {
     msg <- paste("Bravais type and crystal system are",
                  "incompatile in this object of class",
-                 "'bravais'.\n")
+                 "bravais.\n")
     ans <- FALSE
     if (message) cat(msg)
 
@@ -664,7 +664,7 @@ check_bravais_validity <- function(x,message=FALSE) {
        x$lt_sys != "monoclinic") {
     msg <- paste("Bravais type and lattice system are",
                  "incompatile in this object of class",
-                 "'bravais'.\n")
+                 "bravais.\n")
     ans <- FALSE
 
     return(ans)
@@ -725,7 +725,7 @@ check_bravais_validity <- function(x,message=FALSE) {
   if (!log1 & !log2 & !log3 & !log4 & !log5 & !log6 & !log7) {
     msg <- paste("The crystal family, crystal system and",
                  "lattice system of this object of class",
-                "'bravais' are not compatible.\n")
+                "bravais are not compatible.\n")
     ans <- FALSE
     if (message) cat(msg)
 
@@ -766,7 +766,7 @@ check_unit_cell_validity <- function(x,message=FALSE) {
   ans <- is(x,"unit_cell")
   if (!ans) {
     msg <- paste("This is not a valid object of class",
-                 "'unit_cell'.\n")
+                 "unit_cell.\n")
     if (message) cat(msg)
 
     return(ans)
@@ -775,7 +775,7 @@ check_unit_cell_validity <- function(x,message=FALSE) {
   if (!is.numeric(x$a) | !is.numeric(x$b) |
       !is.numeric(x$c)) {
     msg <- paste("One or more of the a, b, c of this object",
-                 "of class 'unit_cell' are not numeric.\n")
+                 "of class unit_cell are not numeric.\n")
     ans <- FALSE
     if (message) cat(msg)
 
@@ -787,8 +787,8 @@ check_unit_cell_validity <- function(x,message=FALSE) {
   ans3 <- check_angle_validity(x$gamma)
   if (!ans1 | !ans2 | !ans3) {
     msg <- paste("One or more of the alpha, beta, gamma",
-                 "of this object of class 'unit_cell'",
-                 "are not of class 'angle'.\n")
+                 "of this object of class unit_cell",
+                 "are not of class angle.\n")
     if (message) cat(msg)
     ans <- FALSE
 
@@ -887,7 +887,7 @@ check_rec_unit_cell_validity <- function(x,message=FALSE) {
   ans <- is(x,"rec_unit_cell")
   if (!ans) {
     msg <- paste("This is not a valid object of class",
-                 "'rec_unit_cell'.\n")
+                 "rec_unit_cell.\n")
     if (message) cat(msg)
 
     return(ans)
@@ -896,7 +896,7 @@ check_rec_unit_cell_validity <- function(x,message=FALSE) {
   if (!is.numeric(x$ar) | !is.numeric(x$br) |
       !is.numeric(x$cr)) {
     msg <- paste("One or more of the ar, br, cr of this object",
-                 "of class 'rec_unit_cell' are not numeric.\n")
+                 "of class rec_unit_cell are not numeric.\n")
     ans <- FALSE
     if (message) cat(msg)
 
@@ -908,8 +908,8 @@ check_rec_unit_cell_validity <- function(x,message=FALSE) {
   ans3 <- check_angle_validity(x$gammar)
   if (!ans1 | !ans2 | !ans3) {
     msg <- paste("One or more of the alphar, betar, gammar",
-                 "of this object of class 'rec_unit_cell'",
-                 "are not of class 'angle'.\n")
+                 "of this object of class rec_unit_cell",
+                 "are not of class angle.\n")
     if (message) cat(msg)
     ans <- FALSE
 
@@ -1013,7 +1013,7 @@ check_cryst_symm_validity <- function(x,message=FALSE) {
   fans <- is(x,"cryst_symm")
   if (!fans) {
     msg <- paste("This is not a valid object of class",
-                  "'cryst_symm'.\n")
+                  "cryst_symm.\n")
     ans <- FALSE
     if (message) cat(msg)
 
@@ -1254,7 +1254,7 @@ check_merged_reflections_validity <- function(x,message=FALSE) {
   ans <- is(x,"merged_reflections")
   if (!ans) {
     msg <- paste("This is not a valid object of class",
-                 "'merged_reflections'.\n")
+                 "merged_reflections.\n")
     if (message) cat(msg)
 
     return(ans)
@@ -1265,7 +1265,7 @@ check_merged_reflections_validity <- function(x,message=FALSE) {
   ans2 <- check_cryst_symm_validity(x$csym)
   if (!ans1) {
     msg <- paste("Input does not include  a valid object",
-                 "of class 'rec_unit_cell'.\n")
+                 "of class rec_unit_cell.\n")
     if (message) cat(msg)
   }
   if (!ans2) {
@@ -1280,8 +1280,8 @@ check_merged_reflections_validity <- function(x,message=FALSE) {
   # Check records
   ans <- is(x$records,"data.frame")
   if (!ans) {
-    msg <- paste("'records' is not a valid object",
-                 "of class 'data.frame'.\n")
+    msg <- paste("records is not a valid object",
+                 "of class data.frame.\n")
     if (message) cat(msg)
 
     return(ans)
@@ -1290,7 +1290,7 @@ check_merged_reflections_validity <- function(x,message=FALSE) {
   # Check 'records' has at least 3 columns
   ans <- length(x$records[1,]) >= 3
   if (!ans) {
-    msg <- paste("'records' must have at least 3 columns,",
+    msg <- paste("records must have at least 3 columns,",
                  "the 3 Miller indices, H, K, L.\n")
     if (message) cat(msg)
 
@@ -1300,8 +1300,8 @@ check_merged_reflections_validity <- function(x,message=FALSE) {
   # Check dtypes
   ans <- is(x$dtypes,"character")
   if (!ans) {
-    msg <- paste("'dtypes' is not of a valid object",
-                   "of class 'character'.\n")
+    msg <- paste("dtypes is not of a valid object",
+                   "of class character.\n")
     if (message) cat(msg)
 
     return(ans)
@@ -1312,7 +1312,7 @@ check_merged_reflections_validity <- function(x,message=FALSE) {
                "K","M","E","P","W","A","B","I","R")
   for (dt in x$dtypes) {
     if (!(dt %in% Vdtypes)) {
-      msg <- "One or more 'dtypes' are not recognised.\n"
+      msg <- "One or more dtypes are not recognised.\n"
       if (message) cat(msg)
       ans <- FALSE
 
@@ -1323,8 +1323,8 @@ check_merged_reflections_validity <- function(x,message=FALSE) {
   # Number of columns = length(dtypes)
   if (ncol(x$records) != length(x$dtypes)) {
     ans <- FALSE
-    msg <- paste("Number of columns of 'records' must be",
-                 "equal to length of 'dtypes'.\n")
+    msg <- paste("Number of columns of records must be",
+                 "equal to length of dtypes.\n")
     if (message) cat(msg)
 
     return(ans)
@@ -1334,8 +1334,8 @@ check_merged_reflections_validity <- function(x,message=FALSE) {
   ans <- (x$dtypes[1] == "H" & x$dtypes[2] == "H" &
             x$dtypes[3] == "H")
   if (!ans) {
-    msg <- paste("The first three columns of 'records' has",
-                 "to be of dtypes 'H'.\n")
+    msg <- paste("The first three columns of records has",
+                 "to be of dtypes H.\n")
     if (message) cat(msg)
 
     return(ans)
@@ -1357,7 +1357,7 @@ check_merged_reflections_validity <- function(x,message=FALSE) {
   if (length(aidx) != length(x$records[,1])) {
     ans <- FALSE
     msg <- paste("Systematic absences are presents in",
-                 "'records'.\n")
+                 "records.\n")
     if (message) cat(msg)
 
     return(ans)

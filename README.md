@@ -5,8 +5,14 @@
 
 <!-- badges: start -->
 
+[![R-CMD-check](https://github.com/jfoadi/cry/workflows/R-CMD-check/badge.svg)](https://github.com/jfoadi/cry/actions)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/cry)](https://CRAN.R-project.org/package=cry)
+[![R-CMD-check](https://github.com/jfoadi/cry/workflows/R-CMD-check/badge.svg)](https://github.com/jfoadi/cry/actions)
+<!-- badges: start -->
+![R-CMD-check](https://github.com/jfoadi/cry/actions/workflows/R-CMD-check.yaml/badge.svg)
+<!-- badges: end -->
+
 <!-- badges: end -->
 
 *cry* is an R package to make it easier dealing with crystallographic

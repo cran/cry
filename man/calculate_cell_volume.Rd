@@ -13,8 +13,9 @@ unit_cell or an object of class rec_unit_cell.}
 \item{...}{Further arguments passed to or from other methods.}
 }
 \value{
-V A real number. The volume (in angstroms^3 or angstroms^{-3})
-          of the input unit cell or reciprocal unit cell.
+V A real number. The volume (in \eqn{angstroms^3} or
+          \eqn{angstroms^{-3}}) of the input unit cell or reciprocal
+          unit cell.
 }
 \description{
 The volume of a unit cell and a reciprocal unit cell can be calculated starting

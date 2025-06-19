@@ -50,76 +50,82 @@
 #' @importFrom ggplot2 scale_y_continuous
 #' @importFrom ggplot2 labs
 #' @export
+plot_SHELX <- function(filename, filename_e, var, type, title_chart) {
+  ## Patch version for ggplot2 release (2025/06/) (J Foadi)
 
-plot_SHELX <-function(filename, filename_e, var, type, title_chart)
-{
-  ## set to NULL global variables
+  ## Avoid NOTE in R CMD check
   Res <- CCall <- CCweak <- ncycle <- Contrast <- dataset <- NULL
-  ## Plot SHELXC data
-  if(type == "shelxc") {
-    gg <- ggplot(filename, aes(1/(Res)^2, var)) +
-      geom_point() + geom_line() +
-      xlab(expression(h^2 * (ring(A)^-2))) +
+
+  ## SHELXC plot
+  if (type == "shelxc") {
+    gg <- ggplot(filename, aes(1 / (Res)^2, var)) +
+      geom_point() +
+      geom_line() +
+      xlab(expression(h^2 * ring(A)^-2)) +
       labs(title = title_chart) +
-      scale_x_continuous(expand = c(0, 0),
-                         limits = c(0,
-                                    max(1/(filename$Res)^2) + min(1/(filename$Res)^2))) +
-      scale_y_continuous(expand = c(0, 0), limits = c(0, max(var) + min(var)))
-      #theme_bw()
-    ifelse(var == filename$d_sig,
-           gp <- gg +
-             ylab(expression(Delta*F/sig(Delta*F))),
-           ifelse(var == filename$Chi_s,
-                  gp <- gg +
-                    ylab(expression(Chi^2)),
-                  ifelse(var == filename$I_sig,
-                         gp <- gg +
-                           ylab(expression(I/sig(I))),
-                         ifelse(var == filename$Complete,
-                                gp <- gg +
-                                  ylab(expression(Completeness)),
-                                gp <- gg +
-                                  ylab(expression(CC_(1/2)))))))
-    gp
-  } else if(type == "shelxd") {
+      scale_x_continuous(
+        expand = c(0, 0),
+        limits = c(0, max(1 / (filename$Res)^2) + min(1 / (filename$Res)^2))
+      ) +
+      scale_y_continuous(
+        expand = c(0, 0),
+        limits = c(0, max(var) + min(var))
+      )
+
+    # Better comparison logic
+    if (identical(var, filename$d_sig)) {
+      gp <- gg + ylab(expression(Delta * F / sig(Delta * F)))
+    } else if (identical(var, filename$Chi_s)) {
+      gp <- gg + ylab(expression(Chi^2))
+    } else if (identical(var, filename$I_sig)) {
+      gp <- gg + ylab(expression(I / sig(I)))
+    } else if (identical(var, filename$Complete)) {
+      gp <- gg + ylab(expression(Completeness))
+    } else {
+      gp <- gg + ylab(expression(CC[1/2]))
+    }
+
+    return(gp)
+
+    ## SHELXD plot
+  } else if (type == "shelxd") {
     gg <- ggplot(filename, aes(CCall, CCweak)) +
       geom_point() +
-      scale_x_continuous(expand = c(0, 0),
-                         limits = c(0,
-                                    max(filename$CCall) + min(filename$CCall))) +
-      scale_y_continuous(expand = c(0, 0),
-                         limits = c(0, max(filename$CCweak) + min(filename$CCweak))) +
-      #theme_bw() +
-      xlab('CCall') +
-      ylab('CCweak')
-    gg
-  } else {
-    # create a new column which will be the total number of cycles
-    lcycle_i <- length(filename$CYCLE[,1])
-    lcycle_o <- length(filename_e$CYCLE[,1])
-    ncycle_i <- seq(1,lcycle_i)
-    ncycle_o <- seq(1,lcycle_o)
-    CYCLE_i <- cbind(filename$CYCLE, ncycle_i)
-    # Change the name of the new variable
-    names(CYCLE_i)[names(CYCLE_i) == 'ncycle_i'] <- 'ncycle'
-    CYCLE_o <- cbind(filename_e$CYCLE, ncycle_o)
-    names(CYCLE_o)[names(CYCLE_o) == 'ncycle_o'] <- 'ncycle'
+      scale_x_continuous(
+        expand = c(0, 0),
+        limits = c(0, max(filename$CCall) + min(filename$CCall))
+      ) +
+      scale_y_continuous(
+        expand = c(0, 0),
+        limits = c(0, max(filename$CCweak) + min(filename$CCweak))
+      ) +
+      xlab("CCall") +
+      ylab("CCweak")
 
-    # Since the DF can have different length, join the inverted and original DF
-    # to create a new data frame. All the column must have the same name.
-    df <- rbind(CYCLE_o, CYCLE_i)
-    df$dataset <- c(rep("Original", nrow(CYCLE_o)),
-                    rep("Inverted", nrow(CYCLE_i)))
+    return(gg)
 
+    ## SHELXE plot
+  } else if (type == "shelxe") {
+    # Add cycle count
+    lcycle_i <- nrow(filename$CYCLE)
+    lcycle_o <- nrow(filename_e$CYCLE)
 
-    # Plot Contrast vs. Cycle
-    gg <- ggplot(df, aes(ncycle, Contrast, color  =  dataset,
-                         group = dataset)) +
-      geom_line() + geom_point() +
-      #theme_bw() +
-      ggplot2::scale_color_manual(values = c("#4DAC26", "#2C7BB6"),
-                         name = "") +
+    filename$CYCLE$ncycle <- seq_len(lcycle_i)
+    filename_e$CYCLE$ncycle <- seq_len(lcycle_o)
+
+    df <- rbind(
+      transform(filename_e$CYCLE, dataset = "Original"),
+      transform(filename$CYCLE, dataset = "Inverted")
+    )
+
+    gg <- ggplot(df, aes(ncycle, Contrast, color = dataset, group = dataset)) +
+      geom_line() +
+      geom_point() +
+      ggplot2::scale_color_manual(values = c("Original" = "#4DAC26", "Inverted" = "#2C7BB6"), name = "") +
       xlab("Cycle")
+
     return(gg)
   }
+
+  stop("Unknown type: must be 'shelxc', 'shelxd' or 'shelxe'")
 }

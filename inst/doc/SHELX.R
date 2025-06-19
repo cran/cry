@@ -25,7 +25,7 @@ obj_shelxd <- read_SHELX_log(filename)
 class(obj_shelxd)
 names(obj_shelxd)
 
-## ---- fig_width = 16, fig_height= 14------------------------------------------
+## ----fig_width = 16, fig_height= 14-------------------------------------------
 plot_SHELX(filename = obj_shelxd, type = "shelxd") +
   theme_cry()
 

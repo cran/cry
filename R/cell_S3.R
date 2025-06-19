@@ -314,7 +314,7 @@ rec_unit_cell <- function(ar=NULL,br=NULL,cr=NULL,aar=NULL,bbr=NULL,ccr=NULL) {
 #'
 #' @param x An object of class "unit_cell".
 #' @param ... Additional arguments passed to the print methods
-#' @return No values. A message is displayed which includes
+#' @return Nothing. A message is displayed which includes
 #'         information on the unit cell.
 #'
 #' @examples
@@ -343,7 +343,7 @@ print.unit_cell <- function(x,...) {
 #'
 #' @param x An object of class "rec_unit_cell".
 #' @param ... Additional arguments passed to the print methods
-#' @return No values. A message is displayed which includes
+#' @return Nothing. A message is displayed which includes
 #'         information on the reciprocal unit cell.
 #'
 #' @examples
@@ -678,7 +678,7 @@ create_unit_cell.cryst_symm <- function(a,...) {
 }
 
 
-#' Volume of a unit cell (in angstroms^3)
+#' Volume of a unit cell (in cubic angstroms)
 #'
 #' Method of the S3 generic class "calculate_cell_volume", to calculate the
 #' volume, in cubic angstroms, of the unit cell corresponding to the input
@@ -704,7 +704,7 @@ calculate_cell_volume.unit_cell <- function(x,...) {
   # Check uc is an object of class "unit_cell"
   if(!check_unit_cell_validity(uc)) {
     msg <- paste("Input must be a valid object of",
-                 "class 'unit_cell'.\n")
+                 "class unit_cell.\n")
     cat(msg)
 
     return(NULL)
@@ -783,7 +783,7 @@ create_rec_unit_cell.bravais <- function(ar,...) {
   bt <- ar
   # Check bt is an object of class "bravais"
   if(!is(bt,"bravais")) {
-    stop("Input must be a valid object of class 'bravais'.")
+    stop("Input must be a valid object of class bravais.")
   }
 
   # Extract lattice and centering (also check on symbol validity)
@@ -923,7 +923,7 @@ create_rec_unit_cell.unit_cell <- function(ar,...) {
   # Check uc is an object of class "unit_cell"
   if(!check_unit_cell_validity(uc)) {
     msg <- paste("Input must be a valid object",
-                 "of class 'unit_cell'.\n")
+                 "of class unit_cell.\n")
     cat(msg)
 
     return(NULL)
@@ -996,7 +996,7 @@ create_rec_unit_cell.cryst_symm <- function(ar,...) {
   ans <- check_cryst_symm_validity(ar)
   if (!ans) {
     msg <- paste("Input is not a valid object of",
-                 "class 'cryst_symm'.\n")
+                 "class cryst_symm.\n")
     cat(msg)
 
     return(NULL)
@@ -1011,7 +1011,7 @@ create_rec_unit_cell.cryst_symm <- function(ar,...) {
 
 
 
-#' Volume of a reciprocal unit cell (in angstroms^(-3))
+#' Volume of a reciprocal unit cell (in \eqn{angstroms^(-3)})
 #'
 #' Method of the S3 generic class "calculate_cell_volume", to calculate the
 #' volume, in reciprocal cubic angstroms, of the reciprocal unit cell corresponding
@@ -1037,7 +1037,7 @@ calculate_cell_volume.rec_unit_cell <- function(x,...) {
   # Check ruc is an object of class "rec_unit_cell"
   if(!check_rec_unit_cell_validity(ruc)) {
     msg <- paste("Input must be a valid object of",
-                 "class 'rec_unit_cell'.\n")
+                 "class rec_unit_cell.\n")
     cat(msg)
 
     return(NULL)

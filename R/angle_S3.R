@@ -39,7 +39,7 @@ angle <- function(ang,rad_flag=TRUE) {
 #'
 #' @param x An object of class "angle".
 #' @param ... Additional arguments passed to the print methods
-#' @return No values. A message is displayed which includes
+#' @return Nothing. A message is displayed which includes
 #'         information on the angle.
 #' @examples
 #' # Create an angle of 90 degrees using radians

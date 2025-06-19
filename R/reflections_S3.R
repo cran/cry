@@ -113,7 +113,7 @@ merged_reflections <- function(ruc=NULL,csym=NULL,
     ans <- check_rec_unit_cell_validity(ruc)
     if (!ans) {
       msg <- paste("Input is not a valid object",
-                   "of class 'rec_unit_cell'.\n")
+                   "of class rec_unit_cell.\n")
       cat(msg)
 
       return(NULL)
@@ -169,7 +169,7 @@ merged_reflections <- function(ruc=NULL,csym=NULL,
     ans2 <- check_cryst_symm_validity(csym)
     if (!ans1 & ans2) {
       msg <- paste("First input is not a valid object",
-                   "of class 'rec_unit_cell'.\n")
+                   "of class rec_unit_cell.\n")
       cat(msg)
 
       return(NULL)
@@ -195,8 +195,8 @@ merged_reflections <- function(ruc=NULL,csym=NULL,
     uc <- create_unit_cell.rec_unit_cell(ruc)
     ans <- check_validity(uc,csym)
     if (!ans) {
-      msg <- paste("'ruc' object is not compatible with",
-                   "'csym' object because cell parameters",
+      msg <- paste("ruc object is not compatible with",
+                   "csym object because cell parameters",
                    "are not compatible with symmetry.\n")
       cat(msg)
 
@@ -220,8 +220,8 @@ merged_reflections <- function(ruc=NULL,csym=NULL,
     # Check validity of ruc
     ans <- check_rec_unit_cell_validity(ruc)
     if (!ans) {
-      msg <- paste("'ruc' is not a valid object of class",
-                   "'rec_unit_cell'.\n")
+      msg <- paste("ruc is not a valid object of class",
+                   "rec_unit_cell.\n")
       cat(msg)
 
       return(NULL)
@@ -229,8 +229,8 @@ merged_reflections <- function(ruc=NULL,csym=NULL,
     # Check validity of csym
     ans <- check_cryst_symm_validity(csym)
     if (!ans) {
-      msg <- paste("'csym' is not a valid object of class",
-                   "'cryst_symm'.\n")
+      msg <- paste("csym is not a valid object of class",
+                   "cryst_symm.\n")
       cat(msg)
 
       return(NULL)
@@ -238,8 +238,8 @@ merged_reflections <- function(ruc=NULL,csym=NULL,
     # Check 'records' is a data frame
     ans <- is(records,"data.frame")
     if (!ans) {
-      msg <- paste("'records' is not a valid object",
-                   "of class 'data.frame'.\n")
+      msg <- paste("records is not a valid object",
+                   "of class data.frame.\n")
       cat(msg)
 
       return(NULL)
@@ -247,7 +247,7 @@ merged_reflections <- function(ruc=NULL,csym=NULL,
     # Check 'records' has at least 3 columns
     ans <- length(records[1,]) >= 3
     if (!ans) {
-      msg <- paste("'records' must have at least 3 columns,",
+      msg <- paste("records must have at least 3 columns,",
                    "the 3 Miller indices, H, K, L.\n")
       cat(msg)
 
@@ -256,8 +256,8 @@ merged_reflections <- function(ruc=NULL,csym=NULL,
     # Check 'dtypes' is a character vector
     ans <- is(dtypes,"character")
     if (!ans) {
-      msg <- paste("'dtypes' is not of a valid object",
-                   "of class 'character'.\n")
+      msg <- paste("dtypes is not of a valid object",
+                   "of class character.\n")
       cat(msg)
 
       return(NULL)
@@ -267,7 +267,7 @@ merged_reflections <- function(ruc=NULL,csym=NULL,
                  "K","M","E","P","W","A","B","I","R")
     for (dt in dtypes) {
       if (!(dt %in% Vdtypes)) {
-        msg <- "One or more 'dtypes' are not recognised.\n"
+        msg <- "One or more dtypes are not recognised.\n"
         cat(msg)
 
         return(NULL)
@@ -276,8 +276,8 @@ merged_reflections <- function(ruc=NULL,csym=NULL,
     # Number of columns = length(dtypes)
     if (ncol(records) != length(dtypes)) {
       ans <- FALSE
-      msg <- paste("Number of columns of 'records' must be",
-                   "equal to length of 'dtypes'.\n")
+      msg <- paste("Number of columns of records must be",
+                   "equal to length of dtypes.\n")
       cat(msg)
 
       return(NULL)
@@ -286,8 +286,8 @@ merged_reflections <- function(ruc=NULL,csym=NULL,
     ans <- (dtypes[1] == "H" & dtypes[2] == "H" &
       dtypes[3] == "H")
     if (!ans) {
-      msg <- paste("The first three columns of 'records' has",
-                   "to be of dtypes 'H'.\n")
+      msg <- paste("The first three columns of records has",
+                   "to be of dtypes H.\n")
       cat(msg)
 
       return(NULL)
@@ -306,7 +306,7 @@ merged_reflections <- function(ruc=NULL,csym=NULL,
     idx <- sysabs(records[,1:3],csym$SG)
     if (length(idx) != length(records[,1])) {
       msg <- paste("Systematic absences have been",
-                   "eliminated from 'records'.\n")
+                   "eliminated from records.\n")
       cat(msg)
       records <- records[idx,]
     }
@@ -330,7 +330,7 @@ merged_reflections <- function(ruc=NULL,csym=NULL,
 #'
 #' @param x An object of class "merged_reflections".
 #' @param ... Additional arguments passed to the print methods
-#' @return No values. A message is displayed which includes
+#' @return Nothing. A message is displayed which includes
 #'         information on the reflections contained in this object
 #'         and the crystal structure they relate to.
 #'

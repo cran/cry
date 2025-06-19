@@ -166,7 +166,7 @@ cryst_symm <- function(SG=NULL,set=NULL) {
 #'
 #' @param x An object of class "cryst_symm".
 #' @param ... Additional arguments passed to the print methods
-#' @return No values. A message is displayed which includes
+#' @return Nothing. A message is displayed which includes
 #'         information on the crystallographic symmetry.
 #'
 #' @examples

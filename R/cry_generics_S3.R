@@ -59,8 +59,9 @@ create_rec_unit_cell <- function(ar,...) UseMethod("create_rec_unit_cell")
 #' @param x An object used to select a method. Either an object of class
 #'          unit_cell or an object of class rec_unit_cell.
 #' @param ... Further arguments passed to or from other methods.
-#' @return V A real number. The volume (in angstroms^3 or angstroms^{-3})
-#'           of the input unit cell or reciprocal unit cell.
+#' @return V A real number. The volume (in \eqn{angstroms^3} or
+#'           \eqn{angstroms^{-3}}) of the input unit cell or reciprocal
+#'           unit cell.
 #'
 #' @examples
 #' # Calculate the volume of a unit cell
